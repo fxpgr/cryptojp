@@ -1,0 +1,18 @@
+{
+  "bitflyer": {
+    "apikey": "",
+    "secretkey": ""
+  },
+  "coincheck": {
+    "apikey": "",
+    "secretkey": ""
+  },
+  "zaif": {
+    "apikey": "",
+    "secretkey": ""
+  },
+  "btcbox": {
+    "apikey": "",
+    "secretkey": ""
+  }
+}

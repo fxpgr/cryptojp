@@ -1,0 +1,20 @@
+# general things to ignore
+build/
+dist/
+*.egg-info/
+*.egg
+*.py[cod]
+__pycache__/
+*.so
+*~
+.python-version
+.pypirc
+
+# due to using tox and pytest
+.tox
+.cache
+
+# setting things to ignore
+*.pyc
+settings.py
+keys.local.json
