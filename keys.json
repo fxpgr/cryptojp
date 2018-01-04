@@ -14,5 +14,13 @@
   "btcbox": {
     "apikey": "",
     "secretkey": ""
+  },
+  "kraken": {
+    "apikey": "",
+    "secretkey": ""
+  },
+  "quoine": {
+    "apikey": "",
+    "secretkey": ""
   }
 }

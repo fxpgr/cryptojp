@@ -2,29 +2,39 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from tools.HttpHMACUtil import buildMySign,httpGet,httpPost,getnonce
-from settings import *
+from .base.exchange import *
 import time
+from datetime import datetime
+import time,calendar
 
-class Spot():
-    def __init__(self):
-        self._url = quoineRESTURL
-        self._apikey = quoineapikey
-        self._secretkey = quoinesecretkey
+KEYS_GLOBAL = '../keys.json'
+KEYS_LOCAL = '../keys.local.json'
+QUOINE_REST_URL = 'developers.quoine.com' if os.path.exists(KEYS_LOCAL) else 'api.quoine.com'
+
+class Quoine(Exchange):
+    def markets(self):
+        MARKETS_RESOURCE = "/products"
+        json = httpGet(QUOINE_REST_URL,MARKETS_RESOURCE,{},self._apikey,{})
+        return tuple([j['currency_pair_code'] for j in json])
 
     def ticker(self,pair = 'BTCUSD'):
         TICKER_RESOURCE = "/products/code/CASH/%s"%(pair)
         params = {}
-        sign = buildMySign(params,self._secretkey,self._url+TICKER_RESOURCE)
-        json = httpGet(self._url,TICKER_RESOURCE,params,self._apikey,sign)
+        sign = buildMySign(params,self._secretkey,QUOINE_REST_URL+TICKER_RESOURCE)
+        json = httpGet(QUOINE_REST_URL,TICKER_RESOURCE,params,self._apikey,sign)
 
-        self.rate = float(json["last_traded_price"])
-        self.ask = float(json["market_ask"])
-        self.bid = float(json["market_bid"])
-        self.high = float(json["high_market_ask"])
-        self.low = float(json["low_market_bid"])
-        self.vol = float(json["volume_24h"])
+        utc = datetime.utcfromtimestamp(time.time())
+        return Ticker(
+            timestamp = calendar.timegm(utc.timetuple()),
+            last = float(json["last_traded_price"]),
+            ask = float(json["market_ask"]),
+            bid = float(json["market_bid"]),
+            high = float(json["high_market_ask"]),
+            low = float(json["low_market_bid"]),
+            volume = float(json["volume_24h"]),
+        )
+
 
     def trades(self,symbol = ''):
         TRADES_RESOURCE = "/api/trades"

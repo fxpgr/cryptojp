@@ -2,30 +2,36 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from tools.HttpHMACUtil import buildMySign,httpGet,httpPost,getnonce
-from settings import *
+from .base.exchange import *
 import time
+from datetime import datetime
+import time,calendar
 
-class Spot():
-    def __init__(self):
-        self._url = krakenRESTURL
-        self._apikey = krakenapikey
-        self._secretkey = krakensecretkey
+KRAKEN_REST_URL = 'api.kraken.com'
 
-    def ticker(self,pair = 'XBTJPY'):
-        pair = 'XBTJPY'
-        TICKER_RESOURCE = "/0/public/Ticker?pair=XBTJPY"
+class Kraken(Exchange):
+    def markets(self):
+        MARKETS_RESOURCE = "/0/public/AssetPairs"
+        json = httpGet(KRAKEN_REST_URL,MARKETS_RESOURCE,{},self._apikey,{})
+        return tuple([c for c in json['result']])
+
+    def ticker(self,pair = 'XXBTZJPY'):
+        TICKER_RESOURCE = "/0/public/Ticker?pair="+pair
         params = {}
-        sign = buildMySign(params,self._secretkey,self._url+TICKER_RESOURCE)
-        json = httpGet(self._url,TICKER_RESOURCE,params,self._apikey,sign)
+        sign = buildMySign(params,self._secretkey,KRAKEN_REST_URL+TICKER_RESOURCE)
+        json = httpGet(KRAKEN_REST_URL,TICKER_RESOURCE,params,self._apikey,sign)
 
-        self.rate = float(json["result"]["X%sZ%s"%(pair[0:3],pair[3:6])]["c"][0])
-        self.ask = float(json["result"]["X%sZ%s"%(pair[0:3],pair[3:6])]["a"][0])
-        self.bid = float(json["result"]["X%sZ%s"%(pair[0:3],pair[3:6])]["b"][0])
-        self.high = float(json["result"]["X%sZ%s"%(pair[0:3],pair[3:6])]["h"][0])
-        self.low = float(json["result"]["X%sZ%s"%(pair[0:3],pair[3:6])]["l"][0])
-        self.vol = float(json["result"]["X%sZ%s"%(pair[0:3],pair[3:6])]["v"][0])
+        utc = datetime.utcfromtimestamp(time.time())
+        return Ticker(
+            timestamp = calendar.timegm(utc.timetuple()),
+            last = float(json["result"][pair]["c"][0]),
+            bid = float(json["result"][pair]["b"][0]),
+            ask = float(json["result"][pair]["a"][0]),
+            high = float(json["result"][pair]["h"][0]),
+            low = float(json["result"][pair]["l"][0]),
+            volume = float(json["result"][pair]["v"][0])
+        )
 
     def trades(self,symbol = ''):
         TRADES_RESOURCE = "/api/trades"
