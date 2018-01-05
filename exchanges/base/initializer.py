@@ -20,12 +20,3 @@ def NewExchange(exchange_name,apikey,secretkey):
     elif exchange_name == "quoine":
         return quoine.Quoine(apikey,secretkey)
     raise ValueError("error!")
-
-EXCHANGES = (
-"bitflyer",
-"coincheck",
-"zaif",
-"btcbox",
-#"kraken",
-"quoine"
-)

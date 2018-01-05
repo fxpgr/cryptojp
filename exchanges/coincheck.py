@@ -15,8 +15,8 @@ class Coincheck(Exchange):
     def ticker(self,item = ''):
         TICKER_RESOURCE = "/api/ticker"
         params = {}
-        sign = buildMySign(params,self._secretkey,COINCHECK_REST_URL+TICKER_RESOURCE)
-        json = httpGet(COINCHECK_REST_URL,TICKER_RESOURCE,params,self._apikey,sign)
+        sign = self.buildMySign(params,self._secretkey,COINCHECK_REST_URL+TICKER_RESOURCE)
+        json = self.httpGet(COINCHECK_REST_URL,TICKER_RESOURCE,params,self._apikey,sign)
 
         return Ticker(
             timestamp = int(json["timestamp"]),
@@ -26,6 +26,16 @@ class Coincheck(Exchange):
             high = float(json["high"]),
             low = float(json["low"]),
             volume = float(json["volume"])
+        )
+
+    def board(self,item = ''):
+        BOARD_RESOURCE = "/api/order_books"
+        params = {}
+        json = self.httpGet(COINCHECK_REST_URL,BOARD_RESOURCE,params,self._apikey,params)
+        return Board(
+            asks=[Ask(price=float(ask[0]),size=float(ask[1])) for ask in json["asks"]],
+            bids=[Bid(price=float(bid[0]),size=float(bid[1])) for bid in json["bids"]],
+            mid_price= (float(json["asks"][0][0])+float(json["bids"][0][0]))/2
         )
 
     def trades(self,symbol = ''):

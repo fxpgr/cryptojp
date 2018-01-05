@@ -13,9 +13,11 @@ KEYS_LOCAL = '../keys.local.json'
 QUOINE_REST_URL = 'developers.quoine.com' if os.path.exists(KEYS_LOCAL) else 'api.quoine.com'
 
 class Quoine(Exchange):
+    market_dict = {}
     def markets(self):
         MARKETS_RESOURCE = "/products"
         json = httpGet(QUOINE_REST_URL,MARKETS_RESOURCE,{},self._apikey,{})
+        self.market_dict = dict([[j['id'],j['currency_pair_code']] for j in json])
         return tuple([j['currency_pair_code'] for j in json])
 
     def ticker(self,pair = 'BTCUSD'):
@@ -35,6 +37,18 @@ class Quoine(Exchange):
             volume = float(json["volume_24h"]),
         )
 
+    def board(self,item = 'BTCUSD'):
+        if not self.market_dict:
+            self.markets()
+        product_id = tuple(self.market_dict.keys())[tuple(self.market_dict.values()).index(item)]
+        BOARD_RESOURCE = "/products/%s/price_levels"%product_id
+        params = {}
+        json = self.httpGet(QUOINE_REST_URL,BOARD_RESOURCE,params,self._apikey,params)
+        return Board(
+            asks=[Ask(price=float(ask[0]),size=float(ask[1])) for ask in json["buy_price_levels"]],
+            bids=[Bid(price=float(bid[0]),size=float(bid[1])) for bid in json["sell_price_levels"]],
+            mid_price= (float(json["buy_price_levels"][0][0])+float(json["sell_price_levels"][0][0]))/2
+        )
 
     def trades(self,symbol = ''):
         TRADES_RESOURCE = "/api/trades"

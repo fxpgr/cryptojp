@@ -33,6 +33,16 @@ class Kraken(Exchange):
             volume = float(json["result"][pair]["v"][0])
         )
 
+    def board(self,pair = 'XXBTZJPY'):
+        BOARD_RESOURCE = "/0/public/Depth?pair="+pair
+        params = {}
+        json = self.httpGet(KRAKEN_REST_URL,BOARD_RESOURCE,params,self._apikey,params)
+        return Board(
+            asks=[Ask(price=float(ask[0]),size=float(ask[1])) for ask in json["result"][pair]["asks"]],
+            bids=[Bid(price=float(bid[0]),size=float(bid[1])) for bid in json["result"][pair]["bids"]],
+            mid_price= (float(json["result"][pair]["asks"][0][0])+float(json["result"][pair]["bids"][0][0]))/2
+        )
+
     def trades(self,symbol = ''):
         TRADES_RESOURCE = "/api/trades"
         params = {}

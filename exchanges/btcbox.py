@@ -19,7 +19,7 @@ class Btcbox(Exchange):
         params = {
             "coin": item.replace("_jpy","") if item else "btc"
         }
-        json = httpGet(BTCBOX_REST_URL,TICKER_RESOURCE,params,self._apikey,params)
+        json = self.httpGet(BTCBOX_REST_URL,TICKER_RESOURCE,params,self._apikey,params)
         utc = datetime.utcfromtimestamp(time.time())
         return Ticker(
             timestamp = calendar.timegm(utc.timetuple()),
@@ -29,6 +29,16 @@ class Btcbox(Exchange):
             high = float(json["high"]),
             low = float(json["low"]),
             volume = float(json["vol"])
+        )
+
+    def board(self,item = ''):
+        BOARD_RESOURCE = "/api/v1/depth/"
+        params = {}
+        json = self.httpGet(BTCBOX_REST_URL,BOARD_RESOURCE,params,self._apikey,params)
+        return Board(
+            asks=[Ask(price=float(ask[0]),size=float(ask[1])) for ask in json["asks"]],
+            bids=[Bid(price=float(bid[0]),size=float(bid[1])) for bid in json["bids"]],
+            mid_price= float(json["asks"][-1][0]+json["bids"][0][0])/2
         )
 
     def trade(self,symbol,tradeType,price='',amount='',*args,**kwargs):

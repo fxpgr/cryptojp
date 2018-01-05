@@ -15,9 +15,10 @@ class Zaif(Exchange):
         return ("btc_jpy","xem_jpy","mona_jpy","mona_btc")
 
     def ticker(self,item = ''):
-        TICKER_RESOURCE = "/api/1/ticker/"+item if item else "btc_jpy"
+        TICKER_RESOURCE = "/api/1/ticker/"+item if item != "" else "/api/1/ticker/btc_jpy"
+        print(TICKER_RESOURCE)
         params = {}
-        json = httpGet(ZAIF_REST_URL,TICKER_RESOURCE,params,self._apikey,params)
+        json = self.httpGet(ZAIF_REST_URL,TICKER_RESOURCE,params,self._apikey,params)
         utc = datetime.utcfromtimestamp(time.time())
         return Ticker(
             timestamp = calendar.timegm(utc.timetuple()),
@@ -27,6 +28,17 @@ class Zaif(Exchange):
             high = float(json["high"]),
             low = float(json["low"]),
             volume = float(json["volume"])
+        )
+
+    def board(self,item = ''):
+        BOARD_RESOURCE = "/api/1/depth/"+item if item != "" else "/api/1/depth/btc_jpy"
+        params = {}
+
+        json = self.httpGet(ZAIF_REST_URL,BOARD_RESOURCE,params,self._apikey,params)
+        return Board(
+            asks=[Ask(price=float(ask[0]),size=float(ask[1])) for ask in json["asks"]],
+            bids=[Bid(price=float(bid[0]),size=float(bid[1])) for bid in json["bids"]],
+            mid_price= (float(json["asks"][0][0])+float(json["bids"][0][0]))/2
         )
 
     def trades(self,symbol = ''):

@@ -10,7 +10,7 @@ BITFLYER_REST_URL = 'api.bitflyer.jp'
 class Bitflyer(Exchange):
     def markets(self):
         MARKETS_RESOURCE = "/v1/markets"
-        json = httpGet(BITFLYER_REST_URL,MARKETS_RESOURCE,{},self._apikey,{})
+        json = self.httpGet(BITFLYER_REST_URL,MARKETS_RESOURCE,{},self._apikey,{})
         return tuple([j["product_code"] for j in json])
 
     def ticker(self,item = ''):
@@ -18,7 +18,7 @@ class Bitflyer(Exchange):
         params = {}
         if item:
             params["product_code"] = item[0:3]+"_"+item[3:6]
-        json = httpGet(BITFLYER_REST_URL,TICKER_RESOURCE,params,self._apikey,params)
+        json = self.httpGet(BITFLYER_REST_URL,TICKER_RESOURCE,params,self._apikey,params)
         return Ticker(
             timestamp = json["timestamp"],
             last = float(json["ltp"]),
@@ -27,6 +27,16 @@ class Bitflyer(Exchange):
             bid = float(json["best_bid"]),
             ask = float(json["best_ask"]),
             volume = float(json["volume"])
+        )
+
+    def board(self,item = ''):
+        BOARD_RESOURCE = "/v1/board"
+        params = {}
+        json = self.httpGet(BITFLYER_REST_URL,BOARD_RESOURCE,params,self._apikey,params)
+        return Board(
+            asks=[Ask(price=float(ask["price"]),size=float(ask["size"])) for ask in json["asks"]],
+            bids=[Bid(price=float(bid["price"]),size=float(bid["size"])) for bid in json["bids"]],
+            mid_price= float(json["mid_price"])
         )
 
     def trade(self,symbol,tradeType,price='',amount='',*args,**kwargs):
@@ -122,9 +132,3 @@ class Bitflyer(Exchange):
         params = {}
         sign = buildMySign(params,self._secretkey,self._url+BALANCE_RESOURCE)
         return httpGet(self._url,BALANCE_RESOURCE,params,self._apikey,sign)
-
-    def depth(self):
-        DEPTH_RESOURCE = "/api/order_books"
-        params = {}
-        sign = buildMySign(params,self._secretkey,self._url+DEPTH_RESOURCE)
-        return httpGet(self._url,DEPTH_RESOURCE,params,self._apikey,sign)
