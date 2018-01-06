@@ -1,8 +1,9 @@
 from collections import namedtuple
-from tools.HttpHMACUtil import buildMySign,httpGet,httpPost,getnonce
+from tools.HttpHMACUtil import buildMySign, httpGet, httpPost, getnonce
+
 
 class Exchange(object):
-    def __init__(self,apikey,secretkey):
+    def __init__(self, apikey, secretkey):
         self._apikey = apikey
         self._secretkey = secretkey
         self.httpGet = httpGet
@@ -10,19 +11,21 @@ class Exchange(object):
         self.buildMySign = buildMySign
 
 
-Ticker = namedtuple("Ticker",("timestamp","last","bid","ask","high","low","volume"))
+Ticker = namedtuple("Ticker", ("timestamp", "last", "bid",
+                               "ask", "high", "low", "volume"))
 
-Markets = namedtuple("Markets",())
+Markets = namedtuple("Markets", ())
 
-Ask = namedtuple("Ask",("price","size"))
-Bid = namedtuple("Bid",("price","size"))
-Board = namedtuple("Board",("asks","bids","mid_price"))
+Ask = namedtuple("Ask", ("price", "size"))
+Bid = namedtuple("Bid", ("price", "size"))
+Board = namedtuple("Board", ("asks", "bids", "mid_price"))
+
 
 EXCHANGES = (
-"bitflyer",
-"coincheck",
-"zaif",
-"btcbox",
-#"kraken",
-"quoine"
+    "bitflyer",
+    "coincheck",
+    "zaif",
+    "btcbox",
+    "kraken",
+    "quoine"
 )

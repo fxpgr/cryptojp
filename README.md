@@ -20,7 +20,7 @@ or
 | ticker()  | ✓        | ✓         | ✓      | ✓      | ✓      |
 | markets() | ✓        | ✓         | ✓      | ✓      | ✓      |
 | depth()   | ✓        | ✓         | ✓      | ✓      | ✓      |
-| order()   |          |           |        |        |        |
+| order()   | ✓        | ✓         | ✓      |        |        |
 | balance()   |          |           |        |        |        |
 
 depth() 2018/01/06 done...
