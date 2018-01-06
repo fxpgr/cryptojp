@@ -20,6 +20,8 @@ Ask = namedtuple("Ask", ("price", "size"))
 Bid = namedtuple("Bid", ("price", "size"))
 Board = namedtuple("Board", ("asks", "bids", "mid_price"))
 
+Balance = namedtuple("Balance", ("amount", "available"))
+
 
 EXCHANGES = (
     "bitflyer",

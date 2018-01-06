@@ -60,3 +60,13 @@ class Bitflyer(Exchange):
         json = self.httpPost(BITFLYER_REST_URL, ORDER_RESOURCE,
                              params, self._apikey, sign)
         return json["child_order_acceptance_id"]
+
+    def balance(self):
+        BALANCE_RESOURCE = '/v1 / me / getbalance"
+        params = {
+        }
+        json = self.httpGet(BITFLYER_REST_URL,
+                            ORDER_RESOURCE, {}, self._apikey, {})
+        balances = {}
+        [balances[j['currency_code']]= [j["amount"], j["available"]] for j in json]
+        return balances
