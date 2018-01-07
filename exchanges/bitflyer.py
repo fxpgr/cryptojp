@@ -62,7 +62,7 @@ class Bitflyer(Exchange):
         return json["child_order_acceptance_id"]
 
     def balance(self):
-        BALANCE_RESOURCE = '/v1 / me / getbalance"
+        BALANCE_RESOURCE = "/v1/me/getbalance"
         params = {
         }
         json = self.httpGet(BITFLYER_REST_URL,
