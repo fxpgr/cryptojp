@@ -62,3 +62,21 @@ class Btcbox(Exchange):
         json = self.httpPost(BTCBOX_REST_URL, ORDER_RESOURCE,
                              params, self._apikey, sign)
         return json["id"]
+
+    def balance(self, currency_code):
+        BALANCE_RESOURCE = "/api/v1/balance/"
+        params = {
+        }
+        sign = buildMySign(params, self._secretkey,
+                           BTCBOX_REST_URL + ORDER_RESOURCE)
+        params['signature'] = sign
+        params['nonce'] = self.getnonce()
+        params['key'] = self._apikey
+        params['coin'] = currency_code.lower()
+        json = self.httpPost(BTCBOX_REST_URL, ORDER_RESOURCE,
+                             params, self._apikey, sign)
+
+        balances = {}
+        balances[currency_code.upper()] = [float(json[currency_code.lower() + '_balance']) +
+                                           float(json[currency_code.lower() + '_lock']), float(json[currency_code.lower() + '_balance'])]
+        return balances

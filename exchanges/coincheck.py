@@ -75,3 +75,14 @@ class Coincheck(Exchange):
         json = self.httpPost(COINCHECK_REST_URL, ORDER_RESOURCE,
                              params, self._apikey, sign)
         return json["id"]
+
+    def balance(self):
+        BALANCE_RESOURCE = "/api/accounts/balance"
+        params = {
+        }
+        json = self.httpGet(BITFLYER_REST_URL,
+                            BALANCE_RESOURCE, {}, self._apikey, {})
+        balances = {}
+        balances['JPY'] = [float(json['jpy']) + float(json['jpy_reserved'])]
+        balances['BTC'] = [float(json['btc']) + float(json['btc_reserved'])]
+        return balances
