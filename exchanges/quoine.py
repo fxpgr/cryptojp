@@ -80,3 +80,15 @@ class Quoine(Exchange):
         json = self.httpPost(QUOINE_REST_URL, ORDER_RESOURCE,
                              params, self._apikey, sign)
         return json["id"]
+
+    def balance(self):
+        BALANCE_RESOURCE = "/accounts/balance"
+        params = {
+        }
+        sign = buildMySign(params, self._secretkey,
+                           QUOINE_REST_URL + BALANCE_RESOURCE)
+        json = self.httpGet(QUOINE_REST_URL,
+                            BALANCE_RESOURCE, {}, self._apikey, {})
+        balances = {}
+        [balances[j['currency']]= [j["balance"], j["balance"]] for j in json]
+        return balances

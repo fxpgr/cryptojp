@@ -68,12 +68,12 @@ class Btcbox(Exchange):
         params = {
         }
         sign = buildMySign(params, self._secretkey,
-                           BTCBOX_REST_URL + ORDER_RESOURCE)
+                           BTCBOX_REST_URL + BALANCE_RESOURCE)
         params['signature'] = sign
         params['nonce'] = self.getnonce()
         params['key'] = self._apikey
         params['coin'] = currency_code.lower()
-        json = self.httpPost(BTCBOX_REST_URL, ORDER_RESOURCE,
+        json = self.httpPost(BTCBOX_REST_URL, BALANCE_RESOURCE,
                              params, self._apikey, sign)
 
         balances = {}

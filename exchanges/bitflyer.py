@@ -66,7 +66,7 @@ class Bitflyer(Exchange):
         params = {
         }
         json = self.httpGet(BITFLYER_REST_URL,
-                            ORDER_RESOURCE, {}, self._apikey, {})
+                            BALANCE_RESOURCE, {}, self._apikey, {})
         balances = {}
         [balances[j['currency_code']]= [j["amount"], j["available"]] for j in json]
         return balances
