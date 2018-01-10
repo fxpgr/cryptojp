@@ -5,11 +5,13 @@ import sys
 from tools.HttpHMACUtil import buildMySign, httpGet, httpPost, getnonce
 import time
 from .base.exchange import *
+from .errors import *
 
 BITFLYER_REST_URL = 'api.bitflyer.jp'
 
 
 class Bitflyer(Exchange):
+    @http_exception
     def markets(self):
         MARKETS_RESOURCE = "/v1/markets"
         json = self.httpGet(BITFLYER_REST_URL,
