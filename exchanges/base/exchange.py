@@ -1,5 +1,5 @@
 from collections import namedtuple
-from HttpHMACUtil import buildMySign, httpGet, httpPost, getnonce
+from .HttpHMACUtil import buildMySign, httpGet, httpPost, getnonce
 
 
 class Exchange(object):
