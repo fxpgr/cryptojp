@@ -59,4 +59,7 @@ class Hitbtc(Exchange):
                            BALANCE_RESOURCE).json()
 
         balances = {}
-        return [balances.setdefault(balances[j['currency']], [float(j["available"]) + float(j["reserved"]), float(j["available"])]) for j in json]
+        for j in json:
+            balances[j['currency']] = [
+                float(j["available"]) + float(j["reserved"]), float(j["available"])]
+        return balances

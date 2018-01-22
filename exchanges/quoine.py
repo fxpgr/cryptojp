@@ -90,4 +90,7 @@ class Quoine(Exchange):
                             BALANCE_RESOURCE, {}, self._apikey, {})
 
         balances = {}
-        return [balances.setdefault(balances[j['currency']], [float(j["balance"]), float(j["balance"])]) for j in json]
+        for j in json:
+            balances[j['currency']] = [
+                float(j["balance"]), float(j["balance"])]
+        return balances
