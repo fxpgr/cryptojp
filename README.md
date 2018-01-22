@@ -15,13 +15,13 @@ or
 
 ## Development Status
 
-|           | Bitflyer | Coincheck | Btcbox | Quoine | Kraken |
-|-----------|----------|-----------|--------|--------|--------|
-| ticker()  | ✓        | ✓         | ✓      | ✓      | ✓      |
-| markets() | ✓        | ✓         | ✓      | ✓      | ✓      |
-| depth()   | ✓        | ✓         | ✓      | ✓      | ✓      |
-| order()   | ✓        | ✓         | ✓      | ✓      | ✓      |
-| balance()   |          |           |        |        |        |
+|           | Bitflyer | Coincheck | Btcbox | Quoine | Kraken | Hitbtc |
+|-----------|----------|-----------|--------|--------|--------|--------|
+| ticker()  | ✓        | ✓         | ✓      | ✓      | ✓      | ✓      |
+| markets() | ✓        | ✓         | ✓      | ✓      | ✓      | ✓      |
+| board()   | ✓        | ✓         | ✓      | ✓      | ✓      |        |
+| order()   | ✓        | ✓         | ✓      | ✓      | ✓      | ✓      |
+| balance()   | ✓        | ✓         | ✓      | ✓      | ✓      | ✓      |
 
 order() done...
 

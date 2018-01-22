@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
-from tools.HttpHMACUtil import buildMySign, httpGet, httpPost, getnonce
 import time
 from .base.exchange import *
 from .errors import *
@@ -57,8 +56,8 @@ class Bitflyer(Exchange):
             "price": price,
             "size": size
         }
-        sign = buildMySign(params, self._secretkey,
-                           BITFLYER_REST_URL + ORDER_RESOURCE)
+        sign = self.buildMySign(params, self._secretkey,
+                                BITFLYER_REST_URL + ORDER_RESOURCE)
         json = self.httpPost(BITFLYER_REST_URL, ORDER_RESOURCE,
                              params, self._apikey, sign)
         return json["child_order_acceptance_id"]
@@ -70,5 +69,4 @@ class Bitflyer(Exchange):
         json = self.httpGet(BITFLYER_REST_URL,
                             BALANCE_RESOURCE, {}, self._apikey, {})
         balances = {}
-        [balances[j['currency_code']]= [j["amount"], j["available"]] for j in json]
-        return balances
+        return [balances.setdefault(balances[j['currency_code']], [j["amount"], j["available"]]) for j in json]

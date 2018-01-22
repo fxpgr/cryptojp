@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
-from tools.HttpHMACUtil import buildMySign, httpGet, httpPost, getnonce
 from .base.exchange import *
 import time
 from datetime import datetime
@@ -28,10 +27,10 @@ class Quoine(Exchange):
     def ticker(self, pair='BTCUSD'):
         TICKER_RESOURCE = "/products/code/CASH/%s" % (pair)
         params = {}
-        sign = buildMySign(params, self._secretkey,
-                           QUOINE_REST_URL + TICKER_RESOURCE)
-        json = httpGet(QUOINE_REST_URL, TICKER_RESOURCE,
-                       params, self._apikey, sign)
+        sign = self.buildMySign(params, self._secretkey,
+                                QUOINE_REST_URL + TICKER_RESOURCE)
+        json = self.httpGet(QUOINE_REST_URL, TICKER_RESOURCE,
+                            params, self._apikey, sign)
 
         utc = datetime.utcfromtimestamp(time.time())
         return Ticker(
@@ -75,8 +74,8 @@ class Quoine(Exchange):
             "price": price,
             "quantity": size
         }
-        sign = buildMySign(params, self._secretkey,
-                           QUOINE_REST_URL + ORDER_RESOURCE)
+        sign = self.buildMySign(params, self._secretkey,
+                                QUOINE_REST_URL + ORDER_RESOURCE)
         json = self.httpPost(QUOINE_REST_URL, ORDER_RESOURCE,
                              params, self._apikey, sign)
         return json["id"]
@@ -85,10 +84,10 @@ class Quoine(Exchange):
         BALANCE_RESOURCE = "/accounts/balance"
         params = {
         }
-        sign = buildMySign(params, self._secretkey,
-                           QUOINE_REST_URL + BALANCE_RESOURCE)
+        sign = self.buildMySign(params, self._secretkey,
+                                QUOINE_REST_URL + BALANCE_RESOURCE)
         json = self.httpGet(QUOINE_REST_URL,
                             BALANCE_RESOURCE, {}, self._apikey, {})
+
         balances = {}
-        [balances[j['currency']]= [j["balance"], j["balance"]] for j in json]
-        return balances
+        return [balances.setdefault(balances[j['currency']], [float(j["balance"]), float(j["balance"])]) for j in json]

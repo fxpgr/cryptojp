@@ -23,11 +23,17 @@ Board = namedtuple("Board", ("asks", "bids", "mid_price"))
 Balance = namedtuple("Balance", ("amount", "available"))
 
 
-EXCHANGES = (
+ALL_EXCHANGES = (
     "bitflyer",
     "coincheck",
-    "zaif",
     "btcbox",
     "kraken",
-    "quoine"
+    "quoine",
+    "hitbtc"
+)
+TEST_EXCHANGES = (
+    "bitflyer",
+    "coincheck",
+    "btcbox",
+    "hitbtc"
 )

@@ -3,7 +3,6 @@
 import os
 import sys
 import time
-from tools.HttpHMACUtil import buildMySign, httpGet, httpPost, getnonce
 from .base.exchange import *
 from datetime import datetime
 import time
@@ -54,8 +53,8 @@ class Btcbox(Exchange):
             "side": side.lower(),
             "price": price,
         }
-        sign = buildMySign(params, self._secretkey,
-                           BTCBOX_REST_URL + ORDER_RESOURCE)
+        sign = self.buildMySign(params, self._secretkey,
+                                BTCBOX_REST_URL + ORDER_RESOURCE)
         params['signature'] = sign
         params['nonce'] = self.getnonce()
         params['key'] = self._apikey
@@ -67,8 +66,8 @@ class Btcbox(Exchange):
         BALANCE_RESOURCE = "/api/v1/balance/"
         params = {
         }
-        sign = buildMySign(params, self._secretkey,
-                           BTCBOX_REST_URL + BALANCE_RESOURCE)
+        sign = self.buildMySign(params, self._secretkey,
+                                BTCBOX_REST_URL + BALANCE_RESOURCE)
         params['signature'] = sign
         params['nonce'] = self.getnonce()
         params['key'] = self._apikey

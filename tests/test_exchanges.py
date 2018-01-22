@@ -1,7 +1,7 @@
 from unittest import TestCase
 from exchanges import bitflyer
-from exchanges.base.initializer import NewExchange
-from exchanges.base.exchange import EXCHANGES, Board
+from exchanges import NewExchange
+from exchanges.base.exchange import TEST_EXCHANGES, Board
 import os
 import json
 import logging
@@ -20,7 +20,7 @@ class TestExchanges(TestCase):
 
     def gen_exchange(self):
         self.exchanges = [NewExchange(
-            e, self.config[e]["apikey"], self.config[e]["secretkey"]) for e in EXCHANGES]
+            e, self.config[e]["apikey"], self.config[e]["secretkey"]) for e in TEST_EXCHANGES]
 
     def test_ticker(self):
         for ex in self.exchanges:

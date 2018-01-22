@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
-from tools.HttpHMACUtil import buildMySign, httpGet, httpPost, getnonce
 from .base.exchange import *
 import time
 
@@ -70,8 +69,8 @@ class Coincheck(Exchange):
                 "rate": price,
                 "amount": size
             }
-        sign = buildMySign(params, self._secretkey,
-                           COINCHECK_REST_URL + ORDER_RESOURCE)
+        sign = self.buildMySign(params, self._secretkey,
+                                COINCHECK_REST_URL + ORDER_RESOURCE)
         json = self.httpPost(COINCHECK_REST_URL, ORDER_RESOURCE,
                              params, self._apikey, sign)
         return json["id"]

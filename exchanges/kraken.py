@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
-from tools.HttpHMACUtil import buildMySign, httpGet, httpPost, getnonce
 from .base.exchange import *
 import time
 from datetime import datetime
@@ -15,16 +14,17 @@ KRAKEN_REST_URL = 'api.kraken.com'
 class Kraken(Exchange):
     def markets(self):
         MARKETS_RESOURCE = "/0/public/AssetPairs"
-        json = httpGet(KRAKEN_REST_URL, MARKETS_RESOURCE, {}, self._apikey, {})
+        json = self.httpGet(
+            KRAKEN_REST_URL, MARKETS_RESOURCE, {}, self._apikey, {})
         return tuple([c for c in json['result']])
 
     def ticker(self, pair='XXBTZJPY'):
         TICKER_RESOURCE = "/0/public/Ticker?pair=" + pair
         params = {}
-        sign = buildMySign(params, self._secretkey,
-                           KRAKEN_REST_URL + TICKER_RESOURCE)
-        json = httpGet(KRAKEN_REST_URL, TICKER_RESOURCE,
-                       params, self._apikey, sign)
+        sign = self.buildMySign(params, self._secretkey,
+                                KRAKEN_REST_URL + TICKER_RESOURCE)
+        json = self.httpGet(KRAKEN_REST_URL, TICKER_RESOURCE,
+                            params, self._apikey, sign)
 
         utc = datetime.utcfromtimestamp(time.time())
         return Ticker(
@@ -60,8 +60,8 @@ class Kraken(Exchange):
             "price": price,
             "volume": size,
         }
-        sign = buildMySign(params, self._secretkey,
-                           KRAKEN_REST_URL + ORDER_RESOURCE)
+        sign = self.buildMySign(params, self._secretkey,
+                                KRAKEN_REST_URL + ORDER_RESOURCE)
         json = self.httpPost(KRAKEN_REST_URL, ORDER_RESOURCE,
                              params, self._apikey, sign)
         return json["txid"]
