@@ -39,7 +39,6 @@ class Hitbtc(Exchange):
 
         session = requests.session()
         session.auth = (self._apikey, self._secretkey)
-        session.get
 
         params = {
             "symbol": item.lower(),
@@ -56,7 +55,8 @@ class Hitbtc(Exchange):
 
         session = requests.session()
         session.auth = (self._apikey, self._secretkey)
-        session.get('https://' + HITBTC_REST_URL + BALANCE_RESOURCE).json()
+        json = session.get('https://' + HITBTC_REST_URL +
+                           BALANCE_RESOURCE).json()
 
         balances = {}
         return [balances.setdefault(balances[j['currency']], [float(j["available"]) + float(j["reserved"]), float(j["available"])]) for j in json]
