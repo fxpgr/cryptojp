@@ -1,10 +1,10 @@
-CryptoCoinTradeClient
-=====================
+cryptojp == Python client for cryptocoin exchanges
+==================================================
 
 Description
 -----------
 
--  CryptoCoinTradeClient is a python client for crypto coin trade.
+-  cryptojp is a python client for crypto coin trade.
 
 HOW TO install
 --------------
@@ -29,7 +29,7 @@ Development Status
 +-------------+------------+-------------+----------+----------+----------+----------+
 | order()     | ✓          | ✓           | ✓        | ✓        | ✓        | ✓        |
 +-------------+------------+-------------+----------+----------+----------+----------+
-| balance()   | ✓          | ✓           | ✓        | ✓        | ✓        | ✓        |
+| balance()   | ✓          | ✓           | ✓        | ✓        |          | ✓        |
 +-------------+------------+-------------+----------+----------+----------+----------+
 
 order() done...
