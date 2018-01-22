@@ -30,7 +30,7 @@ order() done...
 ### Ticker
 
 ```
->>> from exchanges.base.initializer import NewExchange
+>>> from exchanges import NewExchange
 >>> APIKEY = "aaaaaaaaaaaaaa"
 >>> SECRET_KEY = "bbbbbbbbbbbbbb"
 
