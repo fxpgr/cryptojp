@@ -56,6 +56,8 @@ class Bitflyer(Exchange):
             "price": price,
             "size": size
         }
+        if order_type.lower() != "limit":
+            params.pop('price')
         sign = self.buildMySign(params, self._secretkey,
                                 BITFLYER_REST_URL + ORDER_RESOURCE)
         json = self.httpPost(BITFLYER_REST_URL, ORDER_RESOURCE,

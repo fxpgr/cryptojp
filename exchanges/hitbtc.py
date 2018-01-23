@@ -46,8 +46,8 @@ class Hitbtc(Exchange):
             "quantity": size,
             "price": price
         }
-        if order_type != "" and order_type != "limit":
-            params['type'] = order_type
+        if order_type != "" and order_type.lower() != "limit":
+            params['type'] = order_type.lower()
             params.pop('price')
         json = session.post('https://' + HITBTC_REST_URL +
                             ORDER_RESOURCE, data=params).json()
