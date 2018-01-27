@@ -1,4 +1,5 @@
 from unittest import TestCase
+import unittest
 from exchanges import bitflyer
 from exchanges import NewExchange
 from exchanges.base.exchange import Board
