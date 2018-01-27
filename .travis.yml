@@ -19,7 +19,6 @@ before_script:
   - pip install mock
 script:
   - tox
-  - make test
 
 notifications:
   email: false
