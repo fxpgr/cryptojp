@@ -17,11 +17,6 @@ POLONIEX_REST_URL = 'poloniex.com'
 
 
 def buildMySign(params, secretKey):
-    sign = ''
-    for key in sorted(params.keys()):
-        sign += key + '=' + str(params[key]) + '&'
-    if sign[-1:] == '&':
-        sign = sign[:-1]
     return hmac.new(secretKey.encode("utf8"), urlencode(params).encode("utf8"), hashlib.sha512).hexdigest()
 
 

@@ -34,6 +34,7 @@ class TestExchanges(TestCase):
         bitflyer.board()
         bitflyer.ticker()
 
+        bitflyer = NewExchange("bitflyer", "", "")
         bitflyer.httpPost = Mock()
         bitflyer.httpPost.return_value = json.loads(BITFLYER_MOCK_ORDER)
         bitflyer.order("ETHBTC", "limit", "buy", 100, 10000)
