@@ -5,6 +5,7 @@ from . import kraken
 from . import quoine
 from . import hitbtc
 from . import binance
+from . import poloniex
 
 
 def NewExchange(exchange_name, apikey, secretkey):
@@ -22,4 +23,6 @@ def NewExchange(exchange_name, apikey, secretkey):
         return hitbtc.Hitbtc(apikey, secretkey)
     elif exchange_name == "binance":
         return binance.Binance(apikey, secretkey)
+    elif exchange_name == "poloniex":
+        return poloniex.Poloniex(apikey, secretkey)
     raise ValueError("error!")

@@ -3,7 +3,6 @@
 import os
 import sys
 from .base.exchange import *
-import time
 from datetime import datetime
 import time
 import calendar
