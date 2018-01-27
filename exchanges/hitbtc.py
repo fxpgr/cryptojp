@@ -31,8 +31,17 @@ class Hitbtc(Exchange):
             volume=float(json["volume"])
         )
 
-    def board(self, item=''):
-        print("not implemented!")
+    def board(self, item='BTCUSD'):
+        BOARD_RESOURCE = "/api/2/public/orderbook/" + item
+        params = {}
+        json = self.httpGet(HITBTC_REST_URL, BOARD_RESOURCE,
+                            params, self._apikey, params)
+        return Board(
+            asks=[Ask(price=float(ask["price"]), size=float(ask["size"]))
+                  for ask in json["ask"]],
+            bids=[Bid(price=float(bid["price"]), size=float(bid["size"]))
+                  for bid in json["bid"]],
+            mid_price=(float(json["ask"][0][0]) + float(json["bid"][0][0])) / 2)
 
     def order(self, item, order_type, side, price, size, *args, **kwargs):
         ORDER_RESOURCE = "/api/2/order"

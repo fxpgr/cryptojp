@@ -43,7 +43,8 @@ class Btcbox(Exchange):
                   for ask in json["asks"]],
             bids=[Bid(price=float(bid[0]), size=float(bid[1]))
                   for bid in json["bids"]],
-            mid_price=float(json["asks"][-1][0] + json["bids"][0][0]) / 2
+            mid_price=(float(json["asks"][-1][0]) +
+                       float(json["bids"][0][0])) / 2
         )
 
     def order(self, item, order_type, side, price, size, *args, **kwargs):
