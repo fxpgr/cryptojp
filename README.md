@@ -10,7 +10,7 @@
 
 or
 
-```pip install https://github.com/airking05/cryptojp```
+```pip install git+https://github.com/airking05/cryptojp```
 
 
 ## Development Status
