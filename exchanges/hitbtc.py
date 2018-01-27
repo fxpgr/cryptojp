@@ -34,8 +34,9 @@ class Hitbtc(Exchange):
     def board(self, item='BTCUSD'):
         BOARD_RESOURCE = "/api/2/public/orderbook/" + item
         params = {}
-        json = self.httpGet(HITBTC_REST_URL, BOARD_RESOURCE,
-                            params, self._apikey, params)
+        json = session.get('https://' + HITBTC_REST_URL +
+                           BOARD_RESOURCE).json()
+
         return Board(
             asks=[Ask(price=float(ask["price"]), size=float(ask["size"]))
                   for ask in json["ask"]],
@@ -72,6 +73,6 @@ class Hitbtc(Exchange):
 
         balances = {}
         for j in json:
-            balances[j['currency']] = [
-                float(j["available"]) + float(j["reserved"]), float(j["available"])]
+            al = float(j["available"]) + float(j["reserved"])
+            balances[j['currency']] = [al, float(j["available"])]
         return balances
