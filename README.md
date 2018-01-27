@@ -15,15 +15,15 @@ or
 
 ## Development Status
 
-|           | Bitflyer | Coincheck | Btcbox | Quoine | Kraken | Hitbtc |
-|-----------|----------|-----------|--------|--------|--------|--------|
-| ticker()  | ✓        | ✓         | ✓      | ✓      | ✓      | ✓      |
-| markets() | ✓        | ✓         | ✓      | ✓      | ✓      | ✓      |
-| board()   | ✓        | ✓         | ✓      | ✓      | ✓      |        |
-| order()   | ✓        | ✓         | ✓      | ✓      | ✓      | ✓      |
-| balance()   | ✓        | ✓         | ✓      | ✓      |       | ✓      |
+|           | Bitflyer | Coincheck | Btcbox | Quoine | Kraken | Hitbtc | Binance |
+|-----------|----------|-----------|--------|--------|--------|--------|---------|
+| ticker()  | ✓        | ✓         | ✓      | ✓      | ✓      | ✓      | ✓       |
+| markets() | ✓        | ✓         | ✓      | ✓      | ✓      | ✓      | ✓       |
+| board()   | ✓        | ✓         | ✓      | ✓      | ✓      | ✓      |         |
+| order()   | ✓        | ✓         | ✓      | ✓      | ✓      | ✓      |         |
+| balance()   | ✓        | ✓         | ✓      | ✓      |       | ✓      |         |
 
-order() done...
+next binance,poloniex...
 
 ## HOW TO USE
 
