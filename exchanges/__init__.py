@@ -4,6 +4,7 @@ from . import btcbox
 from . import kraken
 from . import quoine
 from . import hitbtc
+from . import binance
 
 
 def NewExchange(exchange_name, apikey, secretkey):
@@ -19,4 +20,6 @@ def NewExchange(exchange_name, apikey, secretkey):
         return quoine.Quoine(apikey, secretkey)
     elif exchange_name == "hitbtc":
         return hitbtc.Hitbtc(apikey, secretkey)
+    elif exchange_name == "binance":
+        return binance.Binance(apikey, secretkey)
     raise ValueError("error!")
