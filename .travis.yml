@@ -16,6 +16,7 @@ install: pip install tox-travis
 
 before_script:
   - pip install requests
+  - pip install mock
 script:
   - tox
   - make test
