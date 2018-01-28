@@ -18,8 +18,6 @@ install:
 
 script:
   - tox
-  - coverage run --source=./ py.test tests
-  - coverage report -m
 
 after_success: coveralls
 
