@@ -16,30 +16,19 @@ import http.client
 POLONIEX_REST_URL = 'poloniex.com'
 
 
-def buildMySign(params, secretKey):
-    return hmac.new(secretKey.encode("utf8"), urlencode(params).encode("utf8"), hashlib.sha512).hexdigest()
-
-
-def getnonce():
-    nonce = int("{:.6f}".format(time.time()).replace('.', ''))
-    return(nonce)
-
-
-def httpPost(url, resource, params, apikey, sign, *args, **kwargs):
-    params['nonce'] = getnonce()
-    headers = {
-        "Key": apikey,
-        "Sign": buildMySign(params, sign),
-    }
-    return requests.post('https://' + url + resource,
-                         headers=headers, data=params).json()
-
-
 class Poloniex(Exchange):
     def __init__(self, apikey, secretkey):
+        def httpPost(url, resource, params, apikey, sign, *args, **kwargs):
+            params['nonce'] = int("{:.6f}".format(
+                time.time()).replace('.', ''))
+            headers = {
+                "Key": apikey,
+                "Sign": hmac.new(sign.encode("utf8"), urlencode(params).encode("utf8"), hashlib.sha512).hexdigest(),
+            }
+            return self.session.post('https://' + url + resource,
+                                     headers=headers, data=params).json()
         super().__init__(apikey, secretkey)
         self.session = requests.session()
-        self.session.auth = (self._apikey, self._secretkey)
         self.httpPost = httpPost
 
     def markets(self):

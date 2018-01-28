@@ -32,15 +32,51 @@ class TestExchanges(TestCase):
         bitflyer.markets()
         bitflyer.board()
         bitflyer.ticker()
+        bitflyer.ticker("BTC_JPY")
 
         bitflyer = NewExchange("bitflyer", "", "")
         bitflyer.httpPost = Mock()
         bitflyer.httpPost.return_value = json.loads(BITFLYER_MOCK_ORDER)
         bitflyer.order("ETHBTC", "limit", "buy", 100, 10000)
+        bitflyer.order("ETHBTC", "market", "buy", 100, 10000)
+        bitflyer.get_order("BTC_JPY", "order_id")
 
         bitflyer.httpGet = Mock()
         bitflyer.httpGet.return_value = json.loads(BITFLYER_MOCK_BALANCE)
         bitflyer.balance()
+
+        bitflyer = NewExchange("bitflyer", "", "")
+        bitflyer.session.get = Mock()
+        balance_return = Mock()
+        balance_return.json.return_value = json.loads(BITFLYER_MOCK_BALANCE)
+        bitflyer.session.get.return_value = balance_return
+        bitflyer.session.post = Mock()
+        order_return = Mock()
+        order_return.json.return_value = json.loads(BITFLYER_MOCK_ORDER)
+        bitflyer.session.post.return_value = order_return
+        bitflyer.balance()
+        bitflyer.order("ETHBTC", "limit", "buy", 100, 10000)
+
+    def test_poloniex(self):
+        poloniex = NewExchange("poloniex", "", "")
+        poloniex.ticker()
+        poloniex.httpPost = Mock()
+        poloniex.httpPost.return_value = json.loads(POLONIEX_MOCK_BALANCE)
+        poloniex.balance()
+        poloniex.httpPost.return_value = json.loads(POLONIEX_MOCK_ORDER)
+        poloniex.order("BTC_ETC", "limit",  "sell", 0.00356515, 2)
+
+        poloniex = NewExchange("poloniex", "", "")
+        poloniex.session.get = Mock()
+        balance_return = Mock()
+        balance_return.json.return_value = json.loads(POLONIEX_MOCK_BALANCE)
+        poloniex.session.get.return_value = balance_return
+        poloniex.session.post = Mock()
+        order_return = Mock()
+        order_return.json.return_value = json.loads(POLONIEX_MOCK_ORDER)
+        poloniex.session.post.return_value = order_return
+        poloniex.balance()
+        poloniex.order("ETHBTC", "limit", "buy", 100, 10000)
 
     def test_hitbtc(self):
         hitbtc = NewExchange("hitbtc", "", "")
@@ -72,15 +108,6 @@ class TestExchanges(TestCase):
         binance.board()
         binance.order("ETHBTC", "limit", "buy", 100, 10000)
         binance.balance()
-
-    def test_poloniex(self):
-        poloniex = NewExchange("poloniex", "", "")
-        poloniex.ticker()
-        poloniex.httpPost = Mock()
-        poloniex.httpPost.return_value = json.loads(POLONIEX_MOCK_BALANCE)
-        poloniex.balance()
-        poloniex.httpPost.return_value = json.loads(POLONIEX_MOCK_ORDER)
-        poloniex.order("BTC_ETC", "limit",  "sell", 0.00356515, 2)
 
     def test_coincheck(self):
         coincheck = NewExchange("coincheck", "", "")

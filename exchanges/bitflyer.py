@@ -15,46 +15,34 @@ import json
 BITFLYER_REST_URL = 'api.bitflyer.jp'
 
 
-def buildMySign(params, secretKey):
-    return hmac.new(secretKey, params, hashlib.sha256).hexdigest()
-
-
-def getnonce():
-    nonce = str('%1.2f' % time.time()).replace('.', '')[-9:]
-    return(nonce)
-
-
-def httpGet(url, resource, params, apikey, secretkey):
-    timestamp = str(time.time())
-    text = str.encode(timestamp + "GET" + resource + urlencode(params))
-    headers = {
-        "ACCESS-KEY": apikey,
-        "ACCESS-TIMESTAMP": timestamp,
-        "ACCESS-SIGN": buildMySign(text, str.encode(secretkey)),
-        'Content-Type': 'application/json',
-    }
-    return requests.get('https://' + url + resource,
-                        headers=headers, data=params).json()
-
-
-def httpPost(url, resource, params, apikey, secretkey, *args, **kwargs):
-    timestamp = str(time.time())
-    text = str.encode(timestamp + "POST" + resource + json.dumps(params))
-    headers = {
-        "ACCESS-KEY": apikey,
-        "ACCESS-TIMESTAMP": timestamp,
-        "ACCESS-SIGN": buildMySign(text, str.encode(secretkey)),
-        'Content-Type': 'application/json',
-    }
-    return requests.post('https://' + url + resource,
-                         headers=headers, data=json.dumps(params)).json()
-
-
 class Bitflyer(Exchange):
     def __init__(self, apikey, secretkey):
+        def httpGet(url, resource, params, apikey, secretkey):
+            timestamp = str(time.time())
+            text = str.encode(timestamp + "GET" + resource + urlencode(params))
+            headers = {
+                "ACCESS-KEY": apikey,
+                "ACCESS-TIMESTAMP": timestamp,
+                "ACCESS-SIGN":  hmac.new(str.encode(secretkey), text, hashlib.sha256).hexdigest(),
+                'Content-Type': 'application/json',
+            }
+            return self.session.get('https://' + url + resource,
+                                    headers=headers, data=params).json()
+
+        def httpPost(url, resource, params, apikey, secretkey, *args, **kwargs):
+            timestamp = str(time.time())
+            text = str.encode(timestamp + "POST" +
+                              resource + json.dumps(params))
+            headers = {
+                "ACCESS-KEY": apikey,
+                "ACCESS-TIMESTAMP": timestamp,
+                "ACCESS-SIGN": hmac.new(str.encode(secretkey), text, hashlib.sha256).hexdigest(),
+                'Content-Type': 'application/json',
+            }
+            return self.session.post('https://' + url + resource,
+                                     headers=headers, data=json.dumps(params)).json()
         super().__init__(apikey, secretkey)
         self.session = requests.session()
-        self.session.auth = (self._apikey, self._secretkey)
         self.httpPost = httpPost
         self.httpGet = httpGet
 
@@ -112,16 +100,7 @@ class Bitflyer(Exchange):
         return json["child_order_acceptance_id"]
 
     def get_order(self, symbol, order_id):
-        ORDER_RESOURCE = "/v1/sendchildorder"
-        params = {
-            "product_code": symbol,
-            "child_order_acceptance_id": order_id
-        }
-        json = self.httpGet(BITFLYER_REST_URL,
-                            BALANCE_RESOURCE, params, self._apikey, self._secretkey)
-        if len(json) == 0:
-            return [None, None]
-        return [json[0]['price'], json[0]['size']]
+        print("not implemented!")
 
     def balance(self):
         BALANCE_RESOURCE = "/v1/me/getbalance"

@@ -25,4 +25,4 @@ def NewExchange(exchange_name, apikey, secretkey):
         return binance.Binance(apikey, secretkey)
     elif exchange_name == "poloniex":
         return poloniex.Poloniex(apikey, secretkey)
-    raise ValueError("error!")
+    print("not implemented")
