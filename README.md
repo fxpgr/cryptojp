@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/airking05/cryptojp.svg?branch=master)](https://travis-ci.org/airking05/cryptojp)
+[![Coverage Status](https://coveralls.io/repos/github/airking05/cryptojp/badge.svg?branch=master)](https://coveralls.io/github/airking05/cryptojp?branch=master)
 
 # cryptojp == Python client for cryptocoin exchanges
 
