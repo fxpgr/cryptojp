@@ -58,6 +58,7 @@ class TestExchanges(TestCase):
         order_return.json.return_value = json.loads(HITBTC_MOCK_ORDER)
         hitbtc.session.post.return_value = order_return
         hitbtc.order("ETHBTC", "limit", "buy", 100, 10000)
+        hitbtc.order("ETHBTC", "market", "buy", 100, 10000)
 
     def test_binance(self):
         binance = NewExchange("binance", "", "")
@@ -68,6 +69,10 @@ class TestExchanges(TestCase):
         binance.httpGet.return_value = json.loads(BINANCE_MOCK_TICKER)
         binance.ticker()
 
+        binance.board()
+        binance.order("ETHBTC", "limit", "buy", 100, 10000)
+        binance.balance()
+
     def test_poloniex(self):
         poloniex = NewExchange("poloniex", "", "")
         poloniex.ticker()
@@ -76,6 +81,12 @@ class TestExchanges(TestCase):
         poloniex.balance()
         poloniex.httpPost.return_value = json.loads(POLONIEX_MOCK_ORDER)
         poloniex.order("BTC_ETC", "limit",  "sell", 0.00356515, 2)
+
+    def test_coincheck(self):
+        coincheck = NewExchange("coincheck", "", "")
+        coincheck.ticker()
+        coincheck.markets()
+        coincheck.board()
 
 
 if __name__ == "__main__":
