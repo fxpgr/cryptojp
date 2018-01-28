@@ -12,13 +12,16 @@ matrix:
     - python: 3.6
       env: TOXENV=py36
 
-install: pip install tox-travis
+install:
+  - pip install tox-travis
+  - pip install coveralls
 
-before_script:
-  - pip install requests
-  - pip install mock
 script:
   - tox
+  - coverage run --source=cryptojp py.test tests
+  - coverage report -m
+
+after_success: coveralls
 
 notifications:
   email: false
