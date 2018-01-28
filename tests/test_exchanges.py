@@ -26,6 +26,8 @@ POLONIEX_MOCK_ORDER = """{"orderNumber":31226040,"resultingTrades":[{"amount":"3
 
 
 class TestExchanges(TestCase):
+    def test_realcurrency(self):
+        realcurrency = NewExchange("realcurrency", "", "")
 
     def test_bitflyer(self):
         bitflyer = NewExchange("bitflyer", "", "")
