@@ -10,6 +10,10 @@ from setuptools import setup, find_packages
 # To use a consistent encoding
 from codecs import open
 from os import path
+import sys
+
+sys.path.append('./exchanges')
+sys.path.append('./tests')
 
 here = path.abspath(path.dirname(__file__))
 
@@ -163,4 +167,5 @@ setup(
     #        'sample=sample:main',
     #    ],
     #},
+    test_suite='test_exchanges.suite'
 )

@@ -1,6 +1,5 @@
 from unittest import TestCase
 import unittest
-from exchanges import bitflyer
 from exchanges import NewExchange
 from exchanges.base.exchange import Board
 from mock import Mock
@@ -81,3 +80,9 @@ class TestExchanges(TestCase):
 
 if __name__ == "__main__":
     unittest.main(warnings='ignore')
+
+
+def suite():
+    suite = unittest.TestSuite()
+    suite.addTests(unittest.makeSuite(TestExchanges))
+    return suite
