@@ -67,15 +67,14 @@ class TestExchanges(TestCase):
         poloniex.order("BTC_ETC", "limit",  "sell", 0.00356515, 2)
 
         poloniex = NewExchange("poloniex", "", "")
-        poloniex.session.get = Mock()
+        poloniex.session.post = Mock()
         balance_return = Mock()
         balance_return.json.return_value = json.loads(POLONIEX_MOCK_BALANCE)
-        poloniex.session.get.return_value = balance_return
-        poloniex.session.post = Mock()
+        poloniex.session.post.return_value = balance_return
+        poloniex.balance()
         order_return = Mock()
         order_return.json.return_value = json.loads(POLONIEX_MOCK_ORDER)
         poloniex.session.post.return_value = order_return
-        poloniex.balance()
         poloniex.order("ETHBTC", "limit", "buy", 100, 10000)
 
     def test_hitbtc(self):
