@@ -18,7 +18,7 @@ install:
 
 script:
   - tox
-  - coverage run --source=cryptojp py.test tests
+  - coverage run --source=. py.test tests
   - coverage report -m
 
 after_success: coveralls
