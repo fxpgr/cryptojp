@@ -4,21 +4,57 @@ import os
 import sys
 from .base.exchange import *
 import time
+import requests
+from datetime import datetime
+from urllib.parse import urlencode
+import calendar
+import hmac
+import hashlib
+import http.client
 
 COINCHECK_REST_URL = 'coincheck.jp'
 
 
 class Coincheck(Exchange):
+    def __init__(self, apikey, secretkey):
+        def httpGet(url, resource, params, apikey, secretkey):
+            nonce = int("{:.6f}".format(
+                time.time()).replace('.', ''))
+            text = str.encode(str(nonce) + "https://" + url +
+                              resource + urlencode(params))
+            headers = {
+                "ACCESS-KEY": apikey,
+                "ACCESS-NONCE": str(nonce),
+                "ACCESS-SIGN":  hmac.new(str.encode(secretkey), text, hashlib.sha256).hexdigest(),
+            }
+            return self.session.get('https://' + url + resource,
+                                    headers=headers, data=urlencode(params)).json()
+
+        def httpPost(url, resource, params, apikey, secretkey, *args, **kwargs):
+            nonce = int("{:.6f}".format(
+                time.time()).replace('.', ''))
+            text = str.encode(str(nonce) + "https://" + url +
+                              resource + urlencode(params))
+            headers = {
+                "ACCESS-KEY": apikey,
+                "ACCESS-NONCE": str(nonce),
+                "ACCESS-SIGN":  hmac.new(str.encode(secretkey), text, hashlib.sha256).hexdigest(),
+            }
+            return self.session.post('https://' + url + resource,
+                                     headers=headers, data=urlencode(params)).json()
+        super().__init__(apikey, secretkey)
+        self.session = requests.session()
+        self.httpPost = httpPost
+        self.httpGet = httpGet
+
     def markets(self):
         return ("btc_jpy",)
 
     def ticker(self, item=''):
         TICKER_RESOURCE = "/api/ticker"
         params = {}
-        sign = self.buildMySign(params, self._secretkey,
-                                COINCHECK_REST_URL + TICKER_RESOURCE)
-        json = self.httpGet(COINCHECK_REST_URL,
-                            TICKER_RESOURCE, params, self._apikey, sign)
+        json = self.session.get('https://' + COINCHECK_REST_URL +
+                                TICKER_RESOURCE).json()
 
         return Ticker(
             timestamp=int(json["timestamp"]),
@@ -33,8 +69,8 @@ class Coincheck(Exchange):
     def board(self, item=''):
         BOARD_RESOURCE = "/api/order_books"
         params = {}
-        json = self.httpGet(COINCHECK_REST_URL, BOARD_RESOURCE,
-                            params, self._apikey, params)
+        json = self.session.get('https://' + COINCHECK_REST_URL +
+                                BOARD_RESOURCE).json()
         return Board(
             asks=[Ask(price=float(ask[0]), size=float(ask[1]))
                   for ask in json["asks"]],
@@ -69,19 +105,19 @@ class Coincheck(Exchange):
                 "rate": price,
                 "amount": size
             }
-        sign = self.buildMySign(params, self._secretkey,
-                                COINCHECK_REST_URL + ORDER_RESOURCE)
-        json = self.httpPost(COINCHECK_REST_URL, ORDER_RESOURCE,
-                             params, self._apikey, sign)
+        json = self.httpPost(COINCHECK_REST_URL,
+                             ORDER_RESOURCE, params, self._apikey, self._secretkey)
         return json["id"]
 
     def balance(self):
         BALANCE_RESOURCE = "/api/accounts/balance"
         params = {
         }
-        json = self.httpGet(BITFLYER_REST_URL,
-                            BALANCE_RESOURCE, {}, self._apikey, {})
+        json = self.httpGet(COINCHECK_REST_URL,
+                            BALANCE_RESOURCE, params, self._apikey, self._secretkey)
         balances = {}
-        balances['JPY'] = [float(json['jpy']) + float(json['jpy_reserved'])]
-        balances['BTC'] = [float(json['btc']) + float(json['btc_reserved'])]
+        balances['JPY'] = [
+            float(json['jpy']) + float(json['jpy_reserved']), float(json['jpy'])]
+        balances['BTC'] = [
+            float(json['btc']) + float(json['btc_reserved']), float(json['btc'])]
         return balances

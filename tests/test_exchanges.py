@@ -24,8 +24,12 @@ BINANCE_MOCK_TICKER = """[[1502928000000,"4261.48000000","4485.39000000","4200.7
 POLONIEX_MOCK_BALANCE = """{"LTC":{"available":"5.015","onOrders":"1.0025","btcValue":"0.078"}}"""
 POLONIEX_MOCK_ORDER = """{"orderNumber":31226040,"resultingTrades":[{"amount":"338.8732","date":"2014-10-18 23:03:21","rate":"0.00000173","total":"0.00058625","tradeID":"16164","type":"buy"}]}"""
 
+COINCHECK_MOCK_BALANCE = """{"success":true,"jpy":"0.8401","btc":"7.75052654","jpy_reserved":"3000.0","btc_reserved":"3.5002","jpy_lend_in_use":"0","btc_lend_in_use":"0.3","jpy_lent":"0","btc_lent":"1.2","jpy_debt":"0","btc_debt":"0"}"""
+COINCHECK_MOCK_ORDER = """{"success":true,"id":12345,"rate":"30010.0","amount":"1.3","order_type":"sell","stop_loss_rate":null,"pair":"btc_jpy","created_at":"2015-01-10T05:55:38.000Z"}"""
+
 
 class TestExchanges(TestCase):
+
     def test_realcurrency(self):
         realcurrency = NewExchange("realcurrency", "", "")
 
@@ -67,6 +71,7 @@ class TestExchanges(TestCase):
         poloniex.balance()
         poloniex.httpPost.return_value = json.loads(POLONIEX_MOCK_ORDER)
         poloniex.order("BTC_ETC", "limit",  "sell", 0.00356515, 2)
+        poloniex.order("BTC_ETC", "fillOrKill",  "sell", 0.00356515, 2)
 
         poloniex = NewExchange("poloniex", "", "")
         poloniex.session.post = Mock()
@@ -115,6 +120,20 @@ class TestExchanges(TestCase):
         coincheck.ticker()
         coincheck.markets()
         coincheck.board()
+
+        coincheck.session.get = Mock()
+        balance_return = Mock()
+        balance_return.json.return_value = json.loads(COINCHECK_MOCK_BALANCE)
+        coincheck.session.get.return_value = balance_return
+        coincheck.balance()
+
+        coincheck.session.post = Mock()
+        order_return = Mock()
+        order_return.json.return_value = json.loads(COINCHECK_MOCK_ORDER)
+        coincheck.session.post.return_value = order_return
+        coincheck.order("btc_jpy", "market", "buy", 100, 10000)
+        coincheck.order("btc_jpy", "market", "sell", 100, 10000)
+        coincheck.order("btc_jpy", "limit", "sell", 100, 10000)
 
 
 if __name__ == "__main__":
