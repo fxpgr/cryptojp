@@ -2,16 +2,48 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
-import time
 from .base.exchange import *
-from datetime import datetime
 import time
+import requests
+from datetime import datetime
+from urllib.parse import urlencode
 import calendar
+import hmac
+import hashlib
 
 BTCBOX_REST_URL = 'www.btcbox.co.jp'
 
 
 class Btcbox(Exchange):
+    def __init__(self, apikey, secretkey):
+        def httpGet(url, resource, params, apikey, secretkey):
+            timestamp = str(time.time())
+            coin = params['coin']
+            text = "key={}&coin={}&nonce={}".format(apikey, coin, timestamp)
+            hashId = hashlib.md5()
+            hashId.update(repr(secretkey).encode('utf-8'))
+            sign = hmac.new(str.encode(hashId.hexdigest()).lower(
+            ), str.encode(text), hashlib.sha256).hexdigest()
+            params['signature'] = sign
+            params['key'] = apikey
+            params['nonce'] = timestamp
+            return self.session.get('https://' + url + resource,  data=params).json()
+
+        def httpPost(url, resource, params, apikey, secretkey, *args, **kwargs):
+            timestamp = str(time.time())
+            coin = params['coin']
+            text = "key={}&coin={}&nonce={}".format(apikey, coin, timestamp)
+            sign = hmac.new(str.encode(hashlib.md5(secretkey).hexdigest()).lower(
+            ), str.encode(text), hashlib.sha256).hexdigest()
+            params['signature'] = sign
+            params['key'] = apikey
+            params['nonce'] = timestamp
+            return self.session.post('https://' + url + resource, data=json.dumps(params)).json()
+        super().__init__(apikey, secretkey)
+        self.session = requests.session()
+        self.httpPost = httpPost
+        self.httpGet = httpGet
+
     def markets(self):
         return ("btc_jpy", "ltc_jpy", "doge_jpy", "bch_jpy")
 
@@ -20,14 +52,14 @@ class Btcbox(Exchange):
         params = {
             "coin": item.replace("_jpy", "") if item else "btc"
         }
-        json = self.httpGet(BTCBOX_REST_URL, TICKER_RESOURCE,
-                            params, self._apikey, params)
+        json = self.session.get('https://' + BTCBOX_REST_URL +
+                                TICKER_RESOURCE).json()
         utc = datetime.utcfromtimestamp(time.time())
         return Ticker(
             timestamp=calendar.timegm(utc.timetuple()),
             last=float(json["last"]),
-            bid=None,
-            ask=None,
+            bid=float(json["sell"]),
+            ask=float(json["buy"]),
             high=float(json["high"]),
             low=float(json["low"]),
             volume=float(json["vol"])
@@ -36,8 +68,8 @@ class Btcbox(Exchange):
     def board(self, item=''):
         BOARD_RESOURCE = "/api/v1/depth"
         params = {}
-        json = self.httpGet(BTCBOX_REST_URL, BOARD_RESOURCE,
-                            params, self._apikey, params)
+        json = self.session.get('https://' + BTCBOX_REST_URL +
+                                BOARD_RESOURCE).json()
         return Board(
             asks=[Ask(price=float(ask[0]), size=float(ask[1]))
                   for ask in json["asks"]],
@@ -53,28 +85,19 @@ class Btcbox(Exchange):
             "amount": size,
             "side": side.lower(),
             "price": price,
+            "coin": coin,
         }
-        sign = self.buildMySign(params, self._secretkey,
-                                BTCBOX_REST_URL + ORDER_RESOURCE)
-        params['signature'] = sign
-        params['nonce'] = self.getnonce()
-        params['key'] = self._apikey
         json = self.httpPost(BTCBOX_REST_URL, ORDER_RESOURCE,
-                             params, self._apikey, sign)
+                             params, self._apikey, self._secretkey)
         return json["id"]
 
     def balance(self, currency_code):
         BALANCE_RESOURCE = "/api/v1/balance/"
         params = {
         }
-        sign = self.buildMySign(params, self._secretkey,
-                                BTCBOX_REST_URL + BALANCE_RESOURCE)
-        params['signature'] = sign
-        params['nonce'] = self.getnonce()
-        params['key'] = self._apikey
         params['coin'] = currency_code.lower()
-        json = self.httpPost(BTCBOX_REST_URL, BALANCE_RESOURCE,
-                             params, self._apikey, sign)
+        json = self.httpGet(BTCBOX_REST_URL, ORDER_RESOURCE,
+                            params, self._apikey, self._secretkey)
 
         balances = {}
         balances[currency_code.upper()] = [float(json[currency_code.lower() + '_balance']) +

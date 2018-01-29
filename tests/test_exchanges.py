@@ -135,6 +135,12 @@ class TestExchanges(TestCase):
         coincheck.order("btc_jpy", "market", "sell", 100, 10000)
         coincheck.order("btc_jpy", "limit", "sell", 100, 10000)
 
+    def test_btcbox(self):
+        btcbox = NewExchange("btcbox", "", "")
+        btcbox.ticker()
+        btcbox.markets()
+        btcbox.board()
+
 
 if __name__ == "__main__":
     unittest.main(warnings='ignore')
