@@ -42,7 +42,7 @@ HOW TO USE
 Ticker
 ~~~~~~
 
-::
+.. code:: python
 
     >>> from exchanges import NewExchange
     >>> APIKEY = "aaaaaaaaaaaaaa"

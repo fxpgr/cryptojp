@@ -32,7 +32,7 @@ next binance...
 
 ### Ticker
 
-```
+```python
 >>> from exchanges import NewExchange
 >>> APIKEY = "aaaaaaaaaaaaaa"
 >>> SECRET_KEY = "bbbbbbbbbbbbbb"
