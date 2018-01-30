@@ -22,7 +22,7 @@ class Btcbox(Exchange):
             text = "key={}&coin={}&nonce={}".format(apikey, coin, timestamp)
             hashId = hashlib.md5()
             hashId.update(repr(secretkey).encode('utf-8'))
-            sign = hmac.new(str.encode(hashId.hexdigest()).lower(
+            sign = hmac.new(str.encode(hashId.digest()).lower(
             ), str.encode(text), hashlib.sha256).hexdigest()
             params['signature'] = sign
             params['key'] = apikey

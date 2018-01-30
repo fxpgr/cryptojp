@@ -4,22 +4,58 @@ import os
 import sys
 from .base.exchange import *
 import time
+import requests
 from datetime import datetime
-import time
+from urllib.parse import urlencode
 import calendar
+import hmac
+import hashlib
 
-KEYS_GLOBAL = '../keys.json'
-KEYS_LOCAL = '../keys.local.json'
-QUOINE_REST_URL = 'developers.quoine.com' if os.path.exists(
-    KEYS_LOCAL) else 'api.quoine.com'
+
+QUOINE_REST_URL = 'api.quoine.com'
+import jwt
 
 
 class Quoine(Exchange):
-    market_dict = {}
+    def __init__(self, apikey, secretkey):
+        def httpGet(url, resource, params, apikey, sign, *args, **kwargs):
+            payload = {}
+            payload['nonce'] = str(int("{:.6f}".format(
+                time.time()).replace('.', '')))
+            payload['path'] = resource
+            payload['token_id'] = self._apikey
+            headers = {
+                'Accept': 'application/json',
+                'X-Quoine-API-Version': '2',
+                "X-Quoine-Auth": apikey,
+                "Sign": jwt.encode(payload, self._secretkey, 'HS256'),
+            }
+            return self.session.post('https://' + url + resource,
+                                     headers=headers, data=params).json()
+
+        def httpPost(url, resource, params, apikey, sign, *args, **kwargs):
+            payload = {}
+            payload['nonce'] = str(int("{:.6f}".format(
+                time.time()).replace('.', '')))
+            payload['path'] = resource
+            payload['token_id'] = self._apikey
+            headers = {
+                'Accept': 'application/json',
+                'X-Quoine-API-Version': '2',
+                "X-Quoine-Auth": apikey,
+                "Sign": jwt.encode(payload, self._secretkey, 'HS256'),
+            }
+            return self.session.post('https://' + url + resource,
+                                     headers=headers, data=params).json()
+        super().__init__(apikey, secretkey)
+        self.session = requests.session()
+        self.httpPost = httpPost
+        self.httpGet = httpGet
 
     def markets(self):
         MARKETS_RESOURCE = "/products"
-        json = httpGet(QUOINE_REST_URL, MARKETS_RESOURCE, {}, self._apikey, {})
+        json = self.session.get('https://' + QUOINE_REST_URL +
+                                MARKETS_RESOURCE).json()
         self.market_dict = dict(
             [[j['id'], j['currency_pair_code']] for j in json])
         return tuple([j['currency_pair_code'] for j in json])
@@ -27,10 +63,8 @@ class Quoine(Exchange):
     def ticker(self, pair='BTCUSD'):
         TICKER_RESOURCE = "/products/code/CASH/%s" % (pair)
         params = {}
-        sign = self.buildMySign(params, self._secretkey,
-                                QUOINE_REST_URL + TICKER_RESOURCE)
-        json = self.httpGet(QUOINE_REST_URL, TICKER_RESOURCE,
-                            params, self._apikey, sign)
+        json = self.session.get('https://' + QUOINE_REST_URL +
+                                TICKER_RESOURCE).json()
 
         utc = datetime.utcfromtimestamp(time.time())
         return Ticker(
@@ -50,8 +84,8 @@ class Quoine(Exchange):
             tuple(self.market_dict.values()).index(item)]
         BOARD_RESOURCE = "/products/%s/price_levels" % product_id
         params = {}
-        json = self.httpGet(QUOINE_REST_URL, BOARD_RESOURCE,
-                            params, self._apikey, params)
+        json = self.session.get('https://' + QUOINE_REST_URL +
+                                BOARD_RESOURCE).json()
         return Board(
             asks=[Ask(price=float(ask[0]), size=float(ask[1]))
                   for ask in json["buy_price_levels"]],
@@ -62,10 +96,6 @@ class Quoine(Exchange):
         )
 
     def order(self, item, order_type, side, price, size, *args, **kwargs):
-        if not self.market_dict:
-            self.markets()
-        product_id = tuple(self.market_dict.keys())[
-            tuple(self.market_dict.values()).index(item)]
         ORDER_RESOURCE = "/orders"
         params = {
             "order_type": order_type.lower(),
@@ -74,20 +104,16 @@ class Quoine(Exchange):
             "price": price,
             "quantity": size
         }
-        sign = self.buildMySign(params, self._secretkey,
-                                QUOINE_REST_URL + ORDER_RESOURCE)
-        json = self.httpPost(QUOINE_REST_URL, ORDER_RESOURCE,
-                             params, self._apikey, sign)
+        json = self.httpPost(QUOINE_REST_URL,
+                             ORDER_RESOURCE, params, self._apikey, self._secretkey)
         return json["id"]
 
     def balance(self):
         BALANCE_RESOURCE = "/accounts/balance"
         params = {
         }
-        sign = self.buildMySign(params, self._secretkey,
-                                QUOINE_REST_URL + BALANCE_RESOURCE)
         json = self.httpGet(QUOINE_REST_URL,
-                            BALANCE_RESOURCE, {}, self._apikey, {})
+                            BALANCE_RESOURCE, params, self._apikey, self._secretkey)
 
         balances = {}
         for j in json:

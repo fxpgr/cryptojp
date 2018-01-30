@@ -1,14 +1,10 @@
 from collections import namedtuple
-from .HttpHMACUtil import buildMySign, httpGet, httpPost, getnonce
 
 
 class Exchange(object):
     def __init__(self, apikey, secretkey):
         self._apikey = apikey
         self._secretkey = secretkey
-        self.httpGet = httpGet
-        self.httpPost = httpPost
-        self.buildMySign = buildMySign
 
 
 Ticker = namedtuple("Ticker", ("timestamp", "last", "bid",

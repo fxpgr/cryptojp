@@ -141,6 +141,18 @@ class TestExchanges(TestCase):
         btcbox.markets()
         btcbox.board()
 
+    def test_kraken(self):
+        kraken = NewExchange("kraken", "", "")
+        kraken.ticker()
+        kraken.markets()
+        kraken.board()
+
+    def test_quoine(self):
+        quoine = NewExchange("quoine", "", "")
+        quoine.ticker()
+        quoine.markets()
+        quoine.board()
+
 
 if __name__ == "__main__":
     unittest.main(warnings='ignore')

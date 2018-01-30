@@ -3,27 +3,45 @@
 import os
 import sys
 from .base.exchange import *
-from datetime import datetime
 import time
+import requests
+from datetime import datetime
+from urllib.parse import urlencode
 import calendar
+import hmac
+import hashlib
 
 KRAKEN_REST_URL = 'api.kraken.com'
 
 
 class Kraken(Exchange):
+    def __init__(self, apikey, secretkey):
+        def httpPost(url, resource, params, apikey, sign, *args, **kwargs):
+            nonce = int("{:.6f}".format(
+                time.time()).replace('.', ''))
+            message = resource + \
+                hashlib.sha256(str(nonce) + urlencode(params)).digest()
+            headers = {
+                "API-Key": apikey,
+                "API-Sign": base64.b64encode((hmac.new(base64.b64decode(secretkey), message, hashlib.sha512)).digest()),
+            }
+            return self.session.post('https://' + url + resource,
+                                     headers=headers).json()
+        super().__init__(apikey, secretkey)
+        self.session = requests.session()
+        self.httpPost = httpPost
+
     def markets(self):
         MARKETS_RESOURCE = "/0/public/AssetPairs"
-        json = self.httpGet(
-            KRAKEN_REST_URL, MARKETS_RESOURCE, {}, self._apikey, {})
+        json = self.session.get('https://' + KRAKEN_REST_URL +
+                                MARKETS_RESOURCE).json()
         return tuple([c for c in json['result']])
 
     def ticker(self, pair='XXBTZJPY'):
         TICKER_RESOURCE = "/0/public/Ticker?pair=" + pair
         params = {}
-        sign = self.buildMySign(params, self._secretkey,
-                                KRAKEN_REST_URL + TICKER_RESOURCE)
-        json = self.httpGet(KRAKEN_REST_URL, TICKER_RESOURCE,
-                            params, self._apikey, sign)
+        json = self.session.get('https://' + KRAKEN_REST_URL +
+                                TICKER_RESOURCE).json()
 
         utc = datetime.utcfromtimestamp(time.time())
         return Ticker(
@@ -39,8 +57,8 @@ class Kraken(Exchange):
     def board(self, pair='XXBTZJPY'):
         BOARD_RESOURCE = "/0/public/Depth?pair=" + pair
         params = {}
-        json = self.httpGet(KRAKEN_REST_URL, BOARD_RESOURCE,
-                            params, self._apikey, params)
+        json = self.session.get('https://' + KRAKEN_REST_URL +
+                                BOARD_RESOURCE).json()
         return Board(
             asks=[Ask(price=float(ask[0]), size=float(ask[1]))
                   for ask in json["result"][pair]["asks"]],
@@ -59,8 +77,14 @@ class Kraken(Exchange):
             "price": price,
             "volume": size,
         }
-        sign = self.buildMySign(params, self._secretkey,
-                                KRAKEN_REST_URL + ORDER_RESOURCE)
-        json = self.httpPost(KRAKEN_REST_URL, ORDER_RESOURCE,
-                             params, self._apikey, sign)
+        json = self.httpPost(KRAKEN_REST_URL,
+                             ORDER_RESOURCE, params, self._apikey, self._secretkey)
         return json["txid"]
+
+    def balance(self, currency_code=None):
+        BALANCE_RESOURCE = "/api/v1/balance/"
+        params = {
+        }
+        json = self.httpPost(KRAKEN_REST_URL,
+                             ORDER_RESOURCE, params, self._apikey, self._secretkey)
+        return json["result"]["tb"]
