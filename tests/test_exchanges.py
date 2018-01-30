@@ -27,6 +27,12 @@ POLONIEX_MOCK_ORDER = """{"orderNumber":31226040,"resultingTrades":[{"amount":"3
 COINCHECK_MOCK_BALANCE = """{"success":true,"jpy":"0.8401","btc":"7.75052654","jpy_reserved":"3000.0","btc_reserved":"3.5002","jpy_lend_in_use":"0","btc_lend_in_use":"0.3","jpy_lent":"0","btc_lent":"1.2","jpy_debt":"0","btc_debt":"0"}"""
 COINCHECK_MOCK_ORDER = """{"success":true,"id":12345,"rate":"30010.0","amount":"1.3","order_type":"sell","stop_loss_rate":null,"pair":"btc_jpy","created_at":"2015-01-10T05:55:38.000Z"}"""
 
+BTCBOX_MOCK_ORDER = """{"result":true,"id":"11"}"""
+BTCBOX_MOCK_BALANCE = """{"uid":8,"nameauth":0,"moflag":0,"btc_balance":4234234,"btc_lock":0,"ltc_balance":32429.6,"ltc_lock":2.4,"doge_balance":0,"doge_lock":0,"jpy_balance":2344581.519,"jpy_lock":868862.481}"""
+
+QUOINE_MOCK_BALANCE = """[{"currency":"BTC","balance":"0.04925688"},{"currency":"USD","balance":"7.17696"},{"currency":"JPY","balance":"356.01377"}]"""
+QUOINE_MOCK_ORDER = """{"id":2157474,"order_type":"limit","quantity":"0.01","disc_quantity":"0.0","iceberg_total_quantity":"0.0","side":"sell","filled_quantity":"0.0","price":"500.0","created_at":1462123639,"updated_at":1462123639,"status":"live","leverage_level":1,"source_exchange":"QUOINE","product_id":1,"product_code":"CASH","funding_currency":"USD","currency_pair_code":"BTCUSD","order_fee":"0.0"}"""
+
 
 class TestExchanges(TestCase):
 
@@ -141,6 +147,20 @@ class TestExchanges(TestCase):
         btcbox.markets()
         btcbox.board()
 
+        btcbox.session.get = Mock()
+        balance_return = Mock()
+        balance_return.json.return_value = json.loads(BTCBOX_MOCK_BALANCE)
+        btcbox.session.get.return_value = balance_return
+        btcbox.balance()
+
+        btcbox.session.post = Mock()
+        order_return = Mock()
+        order_return.json.return_value = json.loads(BTCBOX_MOCK_ORDER)
+        btcbox.session.post.return_value = order_return
+        btcbox.order("btc_jpy", "market", "buy", 100, 10000)
+        btcbox.order("btc_jpy", "market", "sell", 100, 10000)
+        btcbox.order("btc_jpy", "limit", "sell", 100, 10000)
+
     def test_kraken(self):
         kraken = NewExchange("kraken", "", "")
         kraken.ticker()
@@ -152,6 +172,20 @@ class TestExchanges(TestCase):
         quoine.ticker()
         quoine.markets()
         quoine.board()
+
+        quoine.session.get = Mock()
+        balance_return = Mock()
+        balance_return.json.return_value = json.loads(QUOINE_MOCK_BALANCE)
+        quoine.session.get.return_value = balance_return
+        quoine.balance()
+
+        quoine.session.post = Mock()
+        order_return = Mock()
+        order_return.json.return_value = json.loads(QUOINE_MOCK_ORDER)
+        quoine.session.post.return_value = order_return
+        quoine.order("btc_jpy", "market", "buy", 100, 10000)
+        quoine.order("btc_jpy", "market", "sell", 100, 10000)
+        quoine.order("btc_jpy", "limit", "sell", 100, 10000)
 
 
 if __name__ == "__main__":

@@ -30,8 +30,8 @@ class Quoine(Exchange):
                 "X-Quoine-Auth": apikey,
                 "Sign": jwt.encode(payload, self._secretkey, 'HS256'),
             }
-            return self.session.post('https://' + url + resource,
-                                     headers=headers, data=params).json()
+            return self.session.get('https://' + url + resource,
+                                    headers=headers, data=params).json()
 
         def httpPost(url, resource, params, apikey, sign, *args, **kwargs):
             payload = {}
@@ -95,19 +95,6 @@ class Quoine(Exchange):
                        float(json["sell_price_levels"][0][0])) / 2
         )
 
-    def order(self, item, order_type, side, price, size, *args, **kwargs):
-        ORDER_RESOURCE = "/orders"
-        params = {
-            "order_type": order_type.lower(),
-            "product_id": product_id,
-            "side": side.lower(),
-            "price": price,
-            "quantity": size
-        }
-        json = self.httpPost(QUOINE_REST_URL,
-                             ORDER_RESOURCE, params, self._apikey, self._secretkey)
-        return json["id"]
-
     def balance(self):
         BALANCE_RESOURCE = "/accounts/balance"
         params = {
@@ -120,3 +107,16 @@ class Quoine(Exchange):
             balances[j['currency']] = [
                 float(j["balance"]), float(j["balance"])]
         return balances
+
+    def order(self, item, order_type, side, price, size, *args, **kwargs):
+        ORDER_RESOURCE = "/orders"
+        params = {
+            "order_type": order_type.lower(),
+            "product_id": item,
+            "side": side.lower(),
+            "price": price,
+            "quantity": size
+        }
+        json = self.httpPost(QUOINE_REST_URL,
+                             ORDER_RESOURCE, params, self._apikey, self._secretkey)
+        return json["id"]

@@ -10,6 +10,7 @@ from urllib.parse import urlencode
 import calendar
 import hmac
 import hashlib
+import json
 
 BTCBOX_REST_URL = 'www.btcbox.co.jp'
 
@@ -22,7 +23,7 @@ class Btcbox(Exchange):
             text = "key={}&coin={}&nonce={}".format(apikey, coin, timestamp)
             hashId = hashlib.md5()
             hashId.update(repr(secretkey).encode('utf-8'))
-            sign = hmac.new(str.encode(hashId.digest()).lower(
+            sign = hmac.new(str.encode(str(hashId.digest())).lower(
             ), str.encode(text), hashlib.sha256).hexdigest()
             params['signature'] = sign
             params['key'] = apikey
@@ -33,7 +34,9 @@ class Btcbox(Exchange):
             timestamp = str(time.time())
             coin = params['coin']
             text = "key={}&coin={}&nonce={}".format(apikey, coin, timestamp)
-            sign = hmac.new(str.encode(hashlib.md5(secretkey).hexdigest()).lower(
+            hashId = hashlib.md5()
+            hashId.update(repr(secretkey).encode('utf-8'))
+            sign = hmac.new(str.encode(str(hashId.digest())).lower(
             ), str.encode(text), hashlib.sha256).hexdigest()
             params['signature'] = sign
             params['key'] = apikey
@@ -85,18 +88,18 @@ class Btcbox(Exchange):
             "amount": size,
             "side": side.lower(),
             "price": price,
-            "coin": coin,
+            "coin": item,
         }
         json = self.httpPost(BTCBOX_REST_URL, ORDER_RESOURCE,
                              params, self._apikey, self._secretkey)
         return json["id"]
 
-    def balance(self, currency_code):
+    def balance(self, currency_code="btc"):
         BALANCE_RESOURCE = "/api/v1/balance/"
         params = {
         }
         params['coin'] = currency_code.lower()
-        json = self.httpGet(BTCBOX_REST_URL, ORDER_RESOURCE,
+        json = self.httpGet(BTCBOX_REST_URL, BALANCE_RESOURCE,
                             params, self._apikey, self._secretkey)
 
         balances = {}

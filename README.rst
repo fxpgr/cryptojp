@@ -64,5 +64,5 @@ Ticker
 
 .. |Build Status| image:: https://travis-ci.org/airking05/cryptojp.svg?branch=master
    :target: https://travis-ci.org/airking05/cryptojp
-.. |Coverage Status| image:: https://coveralls.io/repos/github/airking05/cryptojp/badge.svg?branch=master&date=20180130
+.. |Coverage Status| image:: https://coveralls.io/repos/github/airking05/cryptojp/badge.svg?branch=master&date=20180130_2
    :target: https://coveralls.io/github/airking05/cryptojp?branch=master
