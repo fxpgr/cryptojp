@@ -18,3 +18,5 @@ __pycache__/
 *.pyc
 settings.py
 keys.local.json
+
+.idea/*
