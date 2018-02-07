@@ -1,19 +1,13 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import os
-import sys
 from .base.exchange import *
 import time
 import requests
 from datetime import datetime
-from urllib.parse import urlencode
 import calendar
-import hmac
-import hashlib
-
+import jwt
 
 QUOINE_REST_URL = 'api.quoine.com'
-import jwt
 
 
 class Quoine(Exchange):

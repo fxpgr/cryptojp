@@ -1,6 +1,4 @@
 import requests
-import json
-
 from .base.exchange import *
 
 

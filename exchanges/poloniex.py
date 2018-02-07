@@ -1,10 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import os
-import sys
-import time
 from .base.exchange import *
-from .errors import *
 import requests
 from datetime import datetime
 from urllib.parse import urlencode
@@ -12,7 +8,6 @@ import time
 import calendar
 import hmac
 import hashlib
-import http.client
 POLONIEX_REST_URL = 'poloniex.com'
 
 

@@ -1,7 +1,5 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import os
-import sys
 from .base.exchange import *
 import time
 import requests

@@ -1,16 +1,11 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import os
-import sys
 from .base.exchange import *
 import time
 import requests
-from datetime import datetime
 from urllib.parse import urlencode
-import calendar
 import hmac
 import hashlib
-import http.client
 
 COINCHECK_REST_URL = 'coincheck.jp'
 
