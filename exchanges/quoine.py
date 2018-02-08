@@ -12,12 +12,9 @@ QUOINE_REST_URL = 'api.quoine.com'
 
 class Quoine(Exchange):
     def __init__(self, apikey, secretkey):
-        def httpGet(url, resource, params, apikey, sign, *args, **kwargs):
-            payload = {}
-            payload['nonce'] = str(int("{:.6f}".format(
-                time.time()).replace('.', '')))
-            payload['path'] = resource
-            payload['token_id'] = self._apikey
+        def httpGet(url, resource, params, apikey, sign):
+            payload = {'nonce': str(int("{:.6f}".format(
+                time.time()).replace('.', ''))), 'path': resource, 'token_id': self._apikey}
             headers = {
                 'Accept': 'application/json',
                 'X-Quoine-API-Version': '2',
@@ -27,12 +24,9 @@ class Quoine(Exchange):
             return self.session.get('https://' + url + resource,
                                     headers=headers, data=params).json()
 
-        def httpPost(url, resource, params, apikey, sign, *args, **kwargs):
-            payload = {}
-            payload['nonce'] = str(int("{:.6f}".format(
-                time.time()).replace('.', '')))
-            payload['path'] = resource
-            payload['token_id'] = self._apikey
+        def httpPost(url, resource, params, apikey):
+            payload = {'nonce': str(int("{:.6f}".format(
+                time.time()).replace('.', ''))), 'path': resource, 'token_id': self._apikey}
             headers = {
                 'Accept': 'application/json',
                 'X-Quoine-API-Version': '2',
@@ -50,13 +44,12 @@ class Quoine(Exchange):
         MARKETS_RESOURCE = "/products"
         json = self.session.get('https://' + QUOINE_REST_URL +
                                 MARKETS_RESOURCE).json()
-        self.market_dict = dict(
-            [[j['id'], j['currency_pair_code']] for j in json])
+        li = [[j['id'], j['currency_pair_code']] for j in json]
+        self.market_dict = dict(li)
         return tuple([j['currency_pair_code'] for j in json])
 
     def ticker(self, pair='BTCUSD'):
         TICKER_RESOURCE = "/products/code/CASH/%s" % (pair)
-        params = {}
         json = self.session.get('https://' + QUOINE_REST_URL +
                                 TICKER_RESOURCE).json()
 
@@ -77,7 +70,6 @@ class Quoine(Exchange):
         product_id = tuple(self.market_dict.keys())[
             tuple(self.market_dict.values()).index(item)]
         BOARD_RESOURCE = "/products/%s/price_levels" % product_id
-        params = {}
         json = self.session.get('https://' + QUOINE_REST_URL +
                                 BOARD_RESOURCE).json()
         return Board(
@@ -102,7 +94,7 @@ class Quoine(Exchange):
                 float(j["balance"]), float(j["balance"])]
         return balances
 
-    def order(self, item, order_type, side, price, size, *args, **kwargs):
+    def order(self, item, order_type, side, price, size):
         ORDER_RESOURCE = "/orders"
         params = {
             "order_type": order_type.lower(),
@@ -112,5 +104,5 @@ class Quoine(Exchange):
             "quantity": size
         }
         json = self.httpPost(QUOINE_REST_URL,
-                             ORDER_RESOURCE, params, self._apikey, self._secretkey)
+                             ORDER_RESOURCE, params, self._apikey)
         return json["id"]

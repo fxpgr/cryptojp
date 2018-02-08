@@ -25,7 +25,7 @@ class Coincheck(Exchange):
             return self.session.get('https://' + url + resource,
                                     headers=headers, data=urlencode(params)).json()
 
-        def httpPost(url, resource, params, apikey, secretkey, *args, **kwargs):
+        def httpPost(url, resource, params, apikey, secretkey):
             nonce = int("{:.6f}".format(
                 time.time()).replace('.', ''))
             text = str.encode(str(nonce) + "https://" + url +
@@ -47,7 +47,6 @@ class Coincheck(Exchange):
 
     def ticker(self, item=''):
         TICKER_RESOURCE = "/api/ticker"
-        params = {}
         json = self.session.get('https://' + COINCHECK_REST_URL +
                                 TICKER_RESOURCE).json()
 
@@ -75,7 +74,7 @@ class Coincheck(Exchange):
                        float(json["bids"][0][0])) / 2
         )
 
-    def order(self, item, order_type, side, price, size, *args, **kwargs):
+    def order(self, item, order_type, side, price, size):
         if item != "btc_jpy":
             return
         ORDER_RESOURCE = "/api/exchange/orders"
@@ -110,9 +109,7 @@ class Coincheck(Exchange):
         }
         json = self.httpGet(COINCHECK_REST_URL,
                             BALANCE_RESOURCE, params, self._apikey, self._secretkey)
-        balances = {}
-        balances['JPY'] = [
-            float(json['jpy']) + float(json['jpy_reserved']), float(json['jpy'])]
-        balances['BTC'] = [
-            float(json['btc']) + float(json['btc_reserved']), float(json['btc'])]
+        balances = {'JPY': [
+            float(json['jpy']) + float(json['jpy_reserved']), float(json['jpy'])], 'BTC': [
+            float(json['btc']) + float(json['btc_reserved']), float(json['btc'])]}
         return balances

@@ -1,11 +1,11 @@
-from unittest import TestCase
-import unittest
-from exchanges import NewExchange
-from exchanges.base.exchange import Board
-from mock import Mock
-import os
 import json
-import logging
+import os
+import unittest
+from unittest import TestCase
+
+from mock import Mock
+
+from exchanges import NewExchange
 
 KEYS_GLOBAL = './keys.json'
 KEYS_LOCAL = './keys.local.json'
@@ -118,7 +118,7 @@ class TestExchanges(TestCase):
         binance.ticker()
 
         binance.board()
-        binance.order("ETHBTC", "limit", "buy", 100, 10000)
+        binance.order("BTCUSDT", "limit", "buy", 100, 10000)
         binance.balance()
 
     def test_coincheck(self):

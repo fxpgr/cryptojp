@@ -43,7 +43,7 @@ class Hitbtc(Exchange):
                   for bid in json["bid"]],
             mid_price=(float(json["ask"][0]["price"]) + float(json["bid"][0]["price"])) / 2)
 
-    def order(self, item, order_type, side, price, size, *args, **kwargs):
+    def order(self, item, order_type, side, price, size):
         ORDER_RESOURCE = "/api/2/order"
 
         params = {

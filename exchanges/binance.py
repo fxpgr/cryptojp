@@ -2,26 +2,32 @@
 # -*- coding: utf-8 -*-
 from .base.exchange import *
 from .errors import *
+import requests
 
 BINANCE_REST_URL = 'api.binance.com'
 
 
 class Binance(Exchange):
+    def __init__(self, apikey, secretkey):
+        super().__init__(apikey, secretkey)
+        self.session = requests.session()
+
     @http_exception
     def markets(self):
-        MARKETS_RESOURCE = "/api/v1/ticker/allPrices"
-        json = self.httpGet(BINANCE_REST_URL,
-                            MARKETS_RESOURCE, {}, self._apikey, {})
+        MARKETS_RESOURCE = "/api/v1/ticker/allBookTickers"
+        json = self.session.get('https://' + BINANCE_REST_URL +
+                                MARKETS_RESOURCE).json()
         return tuple([j["symbol"] for j in json])
 
+    @http_exception
     def ticker(self, item='BTCUSDT'):
         TICKER_RESOURCE = "/api/v1/klines"
         params = {
             'symbol': item,
-            'iterval': '1d',
+            'interval': '1d',
         }
-        json = self.httpGet(BINANCE_REST_URL, TICKER_RESOURCE,
-                            params, self._apikey, params)
+        json = self.session.get('https://' + BINANCE_REST_URL +
+                                TICKER_RESOURCE, params=params).json()
         return Ticker(
             timestamp=float(json[-1][0]),
             last=float(json[-1][4]),
@@ -32,11 +38,14 @@ class Binance(Exchange):
             volume=float(json[-1][5])
         )
 
-    def board(self, item=''):
+    @staticmethod
+    def board(item=''):
         print("not implemented")
 
-    def order(self, item, order_type, side, price, size, *args, **kwargs):
+    @staticmethod
+    def order(item, order_type, side, price, size):
         print("not implemented")
 
-    def balance(self):
+    @staticmethod
+    def balance():
         print("not implemented")

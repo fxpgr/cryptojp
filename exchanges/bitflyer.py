@@ -1,16 +1,12 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import os
-import sys
 import time
 from .base.exchange import *
 from .errors import *
 from urllib.parse import urlencode
-import calendar
 import requests
 import hmac
 import hashlib
-from datetime import datetime
 import json
 BITFLYER_REST_URL = 'api.bitflyer.jp'
 
@@ -29,7 +25,7 @@ class Bitflyer(Exchange):
             return self.session.get('https://' + url + resource,
                                     headers=headers, data=params).json()
 
-        def httpPost(url, resource, params, apikey, secretkey, *args, **kwargs):
+        def httpPost(url, resource, params, apikey, secretkey):
             timestamp = str(time.time())
             text = str.encode(timestamp + "POST" +
                               resource + json.dumps(params))
@@ -83,7 +79,7 @@ class Bitflyer(Exchange):
             mid_price=float(json["mid_price"])
         )
 
-    def order(self, item, order_type, side, price, size, *args, **kwargs):
+    def order(self, item, order_type, side, price, size):
         ORDER_RESOURCE = "/v1/me/sendchildorder"
         params = {
             "product_code": item,

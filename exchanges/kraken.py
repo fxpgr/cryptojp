@@ -14,7 +14,7 @@ KRAKEN_REST_URL = 'api.kraken.com'
 
 class Kraken(Exchange):
     def __init__(self, apikey, secretkey):
-        def httpPost(url, resource, params, apikey, sign, *args, **kwargs):
+        def httpPost(url, resource, params, apikey):
             nonce = int("{:.6f}".format(
                 time.time()).replace('.', ''))
             message = resource + \
@@ -37,7 +37,6 @@ class Kraken(Exchange):
 
     def ticker(self, pair='XXBTZJPY'):
         TICKER_RESOURCE = "/0/public/Ticker?pair=" + pair
-        params = {}
         json = self.session.get('https://' + KRAKEN_REST_URL +
                                 TICKER_RESOURCE).json()
 
@@ -54,7 +53,6 @@ class Kraken(Exchange):
 
     def board(self, pair='XXBTZJPY'):
         BOARD_RESOURCE = "/0/public/Depth?pair=" + pair
-        params = {}
         json = self.session.get('https://' + KRAKEN_REST_URL +
                                 BOARD_RESOURCE).json()
         return Board(
@@ -66,7 +64,7 @@ class Kraken(Exchange):
                        float(json["result"][pair]["bids"][0][0])) / 2
         )
 
-    def order(self, item, order_type, side, price, size, *args, **kwargs):
+    def order(self, item, order_type, side, price, size):
         ORDER_RESOURCE = "/0/private/AddOrder"
         params = {
             "pair": item,
@@ -79,10 +77,10 @@ class Kraken(Exchange):
                              ORDER_RESOURCE, params, self._apikey, self._secretkey)
         return json["txid"]
 
-    def balance(self, currency_code=None):
+    def balance(self):
         BALANCE_RESOURCE = "/api/v1/balance/"
         params = {
         }
         json = self.httpPost(KRAKEN_REST_URL,
-                             ORDER_RESOURCE, params, self._apikey, self._secretkey)
+                             BALANCE_RESOURCE, params, self._apikey, self._secretkey)
         return json["result"]["tb"]

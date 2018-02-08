@@ -13,7 +13,7 @@ POLONIEX_REST_URL = 'poloniex.com'
 
 class Poloniex(Exchange):
     def __init__(self, apikey, secretkey):
-        def httpPost(url, resource, params, apikey, sign, *args, **kwargs):
+        def httpPost(url, resource, params, apikey, sign):
             params['nonce'] = int("{:.6f}".format(
                 time.time()).replace('.', ''))
             headers = {
@@ -47,7 +47,7 @@ class Poloniex(Exchange):
     def board(self, item='USDT_BTC'):
         print("not implemented!")
 
-    def order(self, item, order_type, side, price, size, *args, **kwargs):
+    def order(self, item, order_type, side, price, size):
         ORDER_RESOURCE = "/tradingApi"
 
         params = {

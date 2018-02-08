@@ -27,7 +27,7 @@ class Btcbox(Exchange):
             params['nonce'] = timestamp
             return self.session.get('https://' + url + resource,  data=params).json()
 
-        def httpPost(url, resource, params, apikey, secretkey, *args, **kwargs):
+        def httpPost(url, resource, params, apikey, secretkey):
             timestamp = str(time.time())
             coin = params['coin']
             text = "key={}&coin={}&nonce={}".format(apikey, coin, timestamp)
@@ -67,7 +67,6 @@ class Btcbox(Exchange):
 
     def board(self, item=''):
         BOARD_RESOURCE = "/api/v1/depth"
-        params = {}
         json = self.session.get('https://' + BTCBOX_REST_URL +
                                 BOARD_RESOURCE).json()
         return Board(
@@ -79,7 +78,7 @@ class Btcbox(Exchange):
                        float(json["bids"][0][0])) / 2
         )
 
-    def order(self, item, order_type, side, price, size, *args, **kwargs):
+    def order(self, item, order_type, side, price, size):
         ORDER_RESOURCE = "/api/v1/trade_add"
         params = {
             "amount": size,
@@ -93,13 +92,11 @@ class Btcbox(Exchange):
 
     def balance(self, currency_code="btc"):
         BALANCE_RESOURCE = "/api/v1/balance/"
-        params = {
-        }
-        params['coin'] = currency_code.lower()
+        params = {'coin': currency_code.lower()}
         json = self.httpGet(BTCBOX_REST_URL, BALANCE_RESOURCE,
                             params, self._apikey, self._secretkey)
 
-        balances = {}
-        balances[currency_code.upper()] = [float(json[currency_code.lower() + '_balance']) +
-                                           float(json[currency_code.lower() + '_lock']), float(json[currency_code.lower() + '_balance'])]
+        balances = {currency_code.upper(): [float(json[currency_code.lower() + '_balance']) +
+                                            float(json[currency_code.lower() + '_lock']),
+                                            float(json[currency_code.lower() + '_balance'])]}
         return balances
