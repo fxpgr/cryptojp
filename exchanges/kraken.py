@@ -15,13 +15,13 @@ KRAKEN_REST_URL = 'api.kraken.com'
 
 class Kraken(Exchange):
     def __init__(self, apikey, secretkey):
-        def httpPost(url, resource, params, apikey):
+        def httpPost(url, resource, params):
             nonce = int("{:.6f}".format(
                 time.time()).replace('.', ''))
             message = resource + \
                 hashlib.sha256(str(nonce) + urlencode(params)).digest()
             headers = {
-                "API-Key": apikey,
+                "API-Key": self._apikey,
                 "API-Sign": base64.b64encode((hmac.new(base64.b64decode(secretkey), message, hashlib.sha512)).digest()),
             }
             return self.session.post('https://' + url + resource,
@@ -74,14 +74,12 @@ class Kraken(Exchange):
             "price": price,
             "volume": size,
         }
-        json = self.httpPost(KRAKEN_REST_URL,
-                             ORDER_RESOURCE, params, self._apikey, self._secretkey)
+        json = self.httpPost(KRAKEN_REST_URL, ORDER_RESOURCE, params)
         return json["txid"]
 
     def balance(self):
         BALANCE_RESOURCE = "/api/v1/balance/"
         params = {
         }
-        json = self.httpPost(KRAKEN_REST_URL,
-                             BALANCE_RESOURCE, params, self._apikey, self._secretkey)
+        json = self.httpPost(KRAKEN_REST_URL,  BALANCE_RESOURCE, params)
         return json["result"]["tb"]

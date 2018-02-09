@@ -27,11 +27,11 @@ Development Status
 +--------------+----------+-----------+--------+--------+--------+--------+---------+----------+
 | markets()    | ✓        | ✓         | ✓      | ✓      | ✓      | ✓      | ✓       | ✓        |
 +--------------+----------+-----------+--------+--------+--------+--------+---------+----------+
-| board()      | ✓        | ✓         | ✓      | ✓      | ✓      | ✓      |         | ✓        |
+| board()      | ✓        | ✓         | ✓      | ✓      | ✓      | ✓      | ✓       | ✓        |
 +--------------+----------+-----------+--------+--------+--------+--------+---------+----------+
-| order()      | ✓        | ✓         | ✓      | ✓      | ✓      | ✓      |         | ✓        |
+| order()      | ✓        | ✓         | ✓      | ✓      | ✓      | ✓      | ✓       | ✓        |
 +--------------+----------+-----------+--------+--------+--------+--------+---------+----------+
-| balance()    | ✓        | ✓         | ✓      | ✓      | ✓      | ✓      |         | ✓        |
+| balance()    | ✓        | ✓         | ✓      | ✓      | ✓      | ✓      | ✓       | ✓        |
 +--------------+----------+-----------+--------+--------+--------+--------+---------+----------+
 | is_excuted() |          |           |        |        |        |        |         |          |
 +--------------+----------+-----------+--------+--------+--------+--------+---------+----------+
@@ -46,23 +46,29 @@ Ticker
 
 .. code:: python
 
-    >>> from exchanges import NewExchange
-    >>> APIKEY = "aaaaaaaaaaaaaa"
-    >>> SECRET_KEY = "bbbbbbbbbbbbbb"
+    from exchanges import NewExchange
+     
+    APIKEY = "aaaaaaaaaaaaaa"
+    SECRET_KEY = "bbbbbbbbbbbbbb"
 
-    >>> bitflyer=NewExchange("bitflyer", API_KEY, SECRET_KEY)
-    >>> bitflyer.markets()
+    binance = NewExchange("binance", APIKEY, SECRET_KEY)
+    poloniex = NewExchange("poloniex", APIKEY, SECRET_KEY)
+
+     
+    bitflyer=NewExchange("bitflyer", APIKEY, SECRET_KEY)
+    print(bitflyer.markets())
+     
     ('BTC_JPY', 'FX_BTC_JPY', 'ETH_BTC', 'BCH_BTC', 'BTCJPY05JAN2018', 'BTCJPY12JAN2018')
-
-    >>> for market in bitflyer.markets():
-    ...     print(bitflyer.ticker(market))
-    ...
+     
+    tick = bitflyer.ticker("btc_jpy")
+    print(tick)
+      
     Ticker(timestamp='2018-01-04T10:54:01.677', last=1779000.0, bid=1779000.0, ask=1779099.0, high=None, low=None, volume=99020.50507241)
-    Ticker(timestamp='2018-01-04T10:54:01.24', last=1779013.0, bid=1779001.0, ask=1779099.0, high=None, low=None, volume=99019.20607241)
-    Ticker(timestamp='2018-01-04T10:54:01.303', last=1779013.0, bid=1779001.0, ask=1779099.0, high=None, low=None, volume=99019.33707241)
-    Ticker(timestamp='2018-01-04T10:54:01.677', last=1779000.0, bid=1779000.0, ask=1779099.0, high=None, low=None, volume=99019.83707241)
-    Ticker(timestamp='2018-01-04T10:54:02.163', last=1779000.0, bid=1779000.0, ask=1779099.0, high=None, low=None, volume=99019.73707241)
-    Ticker(timestamp='2018-01-04T10:54:02.367', last=1779000.0, bid=1779000.0, ask=1779099.0, high=None, low=None, volume=99020.77707241)
+     
+    print(tick.last)
+     
+     1779000.0
+
 
 .. |Build Status| image:: https://travis-ci.org/airking05/cryptojp.svg?branch=master
    :target: https://travis-ci.org/airking05/cryptojp
