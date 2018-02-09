@@ -27,10 +27,15 @@ class Poloniex(Exchange):
         self.httpPost = httpPost
 
     def markets(self):
-        print("not implemented!")
+        MARKETS_RESOURCE = "/public?command=returnTicker"
+
+        json = self.session.get('https://' + POLONIEX_REST_URL +
+                                MARKETS_RESOURCE).json()
+        return tuple(json.keys())
 
     def ticker(self, item='USDT_BTC'):
         TICKER_RESOURCE = "/public?command=returnTicker"
+
         json = self.session.get('https://' + POLONIEX_REST_URL +
                                 TICKER_RESOURCE).json()
         utc = datetime.utcfromtimestamp(time.time())
@@ -45,7 +50,17 @@ class Poloniex(Exchange):
         )
 
     def board(self, item='USDT_BTC'):
-        print("not implemented!")
+        BOARD_RESOURCE = "/public?command=returnOrderBook&currencyPair=" + item + "&depth=10000"
+
+        json = self.session.get('https://' + POLONIEX_REST_URL +
+                                BOARD_RESOURCE).json()
+        return Board(
+            asks=[Ask(price=float(ask[0]), size=float(ask[1]))
+                  for ask in json["asks"]],
+            bids=[Bid(price=float(bid[0]), size=float(bid[1]))
+                  for bid in json["bids"]],
+            mid_price=(float(json["asks"][0][0])+float(json["bids"][0][0]))/2
+        )
 
     def order(self, item, order_type, side, price, size):
         ORDER_RESOURCE = "/tradingApi"

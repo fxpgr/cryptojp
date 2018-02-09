@@ -72,6 +72,8 @@ class TestExchanges(TestCase):
     def test_poloniex(self):
         poloniex = NewExchange("poloniex", "", "")
         poloniex.ticker()
+        poloniex.markets()
+        poloniex.board()
         poloniex.httpPost = Mock()
         poloniex.httpPost.return_value = json.loads(POLONIEX_MOCK_BALANCE)
         poloniex.balance()

@@ -8,6 +8,7 @@ from urllib.parse import urlencode
 import calendar
 import hmac
 import hashlib
+import base64
 
 KRAKEN_REST_URL = 'api.kraken.com'
 
