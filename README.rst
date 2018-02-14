@@ -1,4 +1,5 @@
-|Build Status| |Coverage Status|
+|made-with-python| |Build Status| |Coverage Status| |Maintenance| |PyPI
+pyversions| |PyPI status|
 
 cryptojp == Python client for cryptocoin exchanges
 ==================================================
@@ -7,6 +8,7 @@ Description
 -----------
 
 -  cryptojp is a python client for crypto coin trade.
+-  You can use this library on Python2 and Python3.
 
 HOW TO install
 --------------
@@ -89,7 +91,15 @@ Order
      
     "JRF20150707-050237-639234"
 
+.. |made-with-python| image:: https://img.shields.io/badge/Made%20with-Python-1f425f.svg
+   :target: https://www.python.org/
 .. |Build Status| image:: https://travis-ci.org/airking05/cryptojp.svg?branch=master
    :target: https://travis-ci.org/airking05/cryptojp
 .. |Coverage Status| image:: https://coveralls.io/repos/github/airking05/cryptojp/badge.svg?branch=master&date=20180130_2
    :target: https://coveralls.io/github/airking05/cryptojp?branch=master
+.. |Maintenance| image:: https://img.shields.io/badge/Maintained%3F-yes-green.svg
+   :target: https://GitHub.com/Naereen/StrapDown.js/graphs/commit-activity
+.. |PyPI pyversions| image:: https://img.shields.io/pypi/pyversions/cryptojp.svg
+   :target: https://pypi.python.org/pypi/cryptojp/
+.. |PyPI status| image:: https://img.shields.io/pypi/status/cryptojp.svg
+   :target: https://pypi.python.org/pypi/cryptojp/
