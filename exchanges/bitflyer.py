@@ -3,7 +3,11 @@
 import time
 from .base.exchange import *
 from .errors import *
-from urllib.parse import urlencode
+import sys
+if sys.version_info.major <= 2:
+    from urllib import urlencode
+else:
+    from urllib.parse import urlencode
 import requests
 import hmac
 import hashlib
@@ -37,7 +41,7 @@ class Bitflyer(Exchange):
             }
             return self.session.post('https://' + url + resource,
                                      headers=headers, data=json.dumps(params)).json()
-        super().__init__(apikey, secretkey)
+        super(Bitflyer, self).__init__(apikey, secretkey)
         self.session = requests.session()
         self.httpPost = httpPost
         self.httpGet = httpGet

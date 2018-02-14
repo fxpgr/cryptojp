@@ -3,7 +3,11 @@
 from .base.exchange import *
 from .errors import *
 import requests
-from urllib.parse import urlencode
+import sys
+if sys.version_info.major <= 2:
+    from urllib import urlencode
+else:
+    from urllib.parse import urlencode
 import time
 import hmac
 import hashlib
@@ -37,7 +41,7 @@ class Binance(Exchange):
             }
             return self.session.get(url, headers=headers).json()
 
-        super().__init__(apikey, secretkey)
+        super(Binance, self).__init__(apikey, secretkey)
         self.session = requests.session()
         self.httpPost = httpPost
         self.httpGet = httpGet

@@ -35,7 +35,7 @@ class Quoine(Exchange):
             }
             return self.session.post('https://' + url + resource,
                                      headers=headers, data=params).json()
-        super().__init__(apikey, secretkey)
+        super(Quoine, self).__init__(apikey, secretkey)
         self.session = requests.session()
         self.httpPost = httpPost
         self.httpGet = httpGet

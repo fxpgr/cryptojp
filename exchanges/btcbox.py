@@ -20,7 +20,7 @@ class Btcbox(Exchange):
             text = "key={}&coin={}&nonce={}".format(apikey, coin, timestamp)
             hashId = hashlib.md5()
             hashId.update(repr(secretkey).encode('utf-8'))
-            sign = hmac.new(str.encode(str(hashId.digest())).lower(
+            sign = hmac.new((bytes(hashId.digest())).lower(
             ), str.encode(text), hashlib.sha256).hexdigest()
             params['signature'] = sign
             params['key'] = apikey
@@ -33,13 +33,14 @@ class Btcbox(Exchange):
             text = "key={}&coin={}&nonce={}".format(apikey, coin, timestamp)
             hashId = hashlib.md5()
             hashId.update(repr(secretkey).encode('utf-8'))
-            sign = hmac.new(str.encode(str(hashId.digest())).lower(
+            sign = hmac.new((bytes(hashId.digest())).lower(
             ), str.encode(text), hashlib.sha256).hexdigest()
             params['signature'] = sign
             params['key'] = apikey
             params['nonce'] = timestamp
             return self.session.post('https://' + url + resource, data=json.dumps(params)).json()
-        super().__init__(apikey, secretkey)
+
+        super(Btcbox, self).__init__(apikey, secretkey)
         self.session = requests.session()
         self.httpPost = httpPost
         self.httpGet = httpGet

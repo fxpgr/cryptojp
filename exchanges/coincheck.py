@@ -3,7 +3,11 @@
 from .base.exchange import *
 import time
 import requests
-from urllib.parse import urlencode
+import sys
+if sys.version_info.major <= 2:
+    from urllib import urlencode
+else:
+    from urllib.parse import urlencode
 import hmac
 import hashlib
 
@@ -37,7 +41,7 @@ class Coincheck(Exchange):
             }
             return self.session.post('https://' + url + resource,
                                      headers=headers, data=urlencode(params)).json()
-        super().__init__(apikey, secretkey)
+        super(Coincheck, self).__init__(apikey, secretkey)
         self.session = requests.session()
         self.httpPost = httpPost
         self.httpGet = httpGet

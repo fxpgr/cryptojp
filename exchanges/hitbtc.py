@@ -8,7 +8,7 @@ HITBTC_REST_URL = 'api.hitbtc.com'
 
 class Hitbtc(Exchange):
     def __init__(self, apikey, secretkey):
-        super().__init__(apikey, secretkey)
+        super(Hitbtc, self).__init__(apikey, secretkey)
         self.session = requests.session()
         self.session.auth = (self._apikey, self._secretkey)
 

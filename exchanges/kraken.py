@@ -4,7 +4,11 @@ from .base.exchange import *
 import time
 import requests
 from datetime import datetime
-from urllib.parse import urlencode
+import sys
+if sys.version_info.major <= 2:
+    from urllib import urlencode
+else:
+    from urllib.parse import urlencode
 import calendar
 import hmac
 import hashlib
@@ -26,7 +30,7 @@ class Kraken(Exchange):
             }
             return self.session.post('https://' + url + resource,
                                      headers=headers).json()
-        super().__init__(apikey, secretkey)
+        super(Kraken, self).__init__(apikey, secretkey)
         self.session = requests.session()
         self.httpPost = httpPost
 
