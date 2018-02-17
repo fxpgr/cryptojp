@@ -6,7 +6,9 @@
 [![PyPI status](https://img.shields.io/pypi/status/cryptojp.svg)](https://pypi.python.org/pypi/cryptojp/)
 
 
-# cryptojp == Python client for cryptocoin exchanges
+# cryptojp
+- == Python client for cryptocoin exchanges
+- welcome your contributions.
 
 ## Description
 
