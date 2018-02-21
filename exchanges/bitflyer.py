@@ -99,8 +99,14 @@ class Bitflyer(Exchange):
                              ORDER_RESOURCE, params, self._apikey, self._secretkey)
         return json["child_order_acceptance_id"]
 
-    def get_order(self, symbol, order_id):
-        print("not implemented!")
+    def get_open_orders(self, symbol="BTC_JPY"):
+        OPEN_ORDERS_RESOURCE = "/v1/me/getchildorders"
+        params = {"child_order_state": "ACTIVE"}
+        if symbol:
+            params["product_code"]= symbol
+        json = self.httpGet(BITFLYER_REST_URL,
+                            OPEN_ORDERS_RESOURCE, params, self._apikey, self._secretkey)
+        return json
 
     def balance(self):
         BALANCE_RESOURCE = "/v1/me/getbalance"
