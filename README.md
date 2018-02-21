@@ -31,8 +31,8 @@ or
 ```python
 from exchanges import NewExchange
  
-APIKEY = "aaaaaaaaaaaaaa"
-SECRET_KEY = "bbbbbbbbbbbbbb"
+APIKEY = "YOUR_API_KEY"
+SECRET_KEY = "YOUR_SECRET_KEY"
 
 binance = NewExchange("binance", APIKEY, SECRET_KEY)
 poloniex = NewExchange("poloniex", APIKEY, SECRET_KEY)
