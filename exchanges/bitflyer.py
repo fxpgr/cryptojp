@@ -45,6 +45,8 @@ class Bitflyer(Exchange):
         self.session = requests.session()
         self.httpPost = httpPost
         self.httpGet = httpGet
+    def __del__(self):
+        self.session.close()
 
     @http_exception
     def markets(self):
@@ -107,6 +109,15 @@ class Bitflyer(Exchange):
         json = self.httpGet(BITFLYER_REST_URL,
                             OPEN_ORDERS_RESOURCE, params, self._apikey, self._secretkey)
         return json
+
+    def cancel_order(self, symbol,order_id):
+        CANCEL_ORDERS_RESOURCE = "/v1/me/cancelchildorder"
+        params = {
+            "product_code": symbol,
+            "child_order_acceptance_id": order_id,
+        }
+        self.httpGet(BITFLYER_REST_URL,
+                     CANCEL_ORDERS_RESOURCE, params, self._apikey, self._secretkey)
 
     def balance(self):
         BALANCE_RESOURCE = "/v1/me/getbalance"
