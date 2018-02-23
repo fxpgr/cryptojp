@@ -45,6 +45,7 @@ class Bitflyer(Exchange):
         self.session = requests.session()
         self.httpPost = httpPost
         self.httpGet = httpGet
+
     def __del__(self):
         self.session.close()
 

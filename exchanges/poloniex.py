@@ -30,6 +30,9 @@ class Poloniex(Exchange):
         self.session = requests.session()
         self.httpPost = httpPost
 
+    def __del__(self):
+        self.session.close()
+
     def markets(self):
         MARKETS_RESOURCE = "/public?command=returnTicker"
 
@@ -80,6 +83,34 @@ class Poloniex(Exchange):
         json = self.httpPost(POLONIEX_REST_URL,
                              ORDER_RESOURCE, params, self._apikey, self._secretkey)
         return json['orderNumber']
+
+    def get_open_orders(self, symbol="USDT_BTC"):
+        OPEN_ORDERS_RESOURCE = "/tradingApi"
+        params = {
+            "command": "returnOpenOrders"
+        }
+        if symbol:
+            params["currencyPair"] = symbol
+        json = self.httpPost(POLONIEX_REST_URL,
+                            OPEN_ORDERS_RESOURCE, params, self._apikey, self._secretkey)
+        return json
+
+    def cancel_order(self, symbol,order_id):
+        CANCEL_ORDERS_RESOURCE = "/tradingApi"
+        params = {
+            "command": "cancelOrder",
+            "orderNumber": order_id
+        }
+        self.httpPost(POLONIEX_REST_URL,
+                     CANCEL_ORDERS_RESOURCE, params, self._apikey, self._secretkey)
+
+    def get_fee(self, symbol = "BTC_JPY"):
+        GET_FEE_RESOURCE = "/tradingApi"
+        params = {
+            "command": "returnFeeInfo",
+        }
+        json = self.httpPost(POLONIEX_REST_URL, GET_FEE_RESOURCE, params, self._apikey, self._secretkey)
+        return [json["takerFee"], json["makerFee"]]
 
     def balance(self):
         BALANCE_RESOURCE = "/tradingApi"

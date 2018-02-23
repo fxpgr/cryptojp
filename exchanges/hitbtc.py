@@ -12,6 +12,9 @@ class Hitbtc(Exchange):
         self.session = requests.session()
         self.session.auth = (self._apikey, self._secretkey)
 
+    def __del__(self):
+        self.session.close()
+
     def markets(self):
         MARKETS_RESOURCE = "/api/2/public/symbol"
         json = self.session.get('https://' + HITBTC_REST_URL +
@@ -58,6 +61,24 @@ class Hitbtc(Exchange):
         json = self.session.post('https://' + HITBTC_REST_URL +
                                  ORDER_RESOURCE, data=params).json()
         return json["clientOrderId"]
+
+    def get_open_orders(self, symbol="BTCUSD"):
+        OPEN_ORDERS_RESOURCE = "/api/2/order"
+        params = {"symbol": symbol}
+        json = self.session.get('https://' + HITBTC_REST_URL +
+                                OPEN_ORDERS_RESOURCE).json()
+        return json
+
+    def cancel_order(self, symbol,order_id):
+        CANCEL_ORDER_RESOURCE = "/api/2/order/"+order_id
+        self.session.delete('https://' + HITBTC_REST_URL +
+                            CANCEL_ORDER_RESOURCE).json()
+
+    def get_fee(self, symbol = "BTCUSD"):
+        GET_FEE_RESOURCE = "/api/2/trading/fee/"+symbol
+        json = self.session.get('https://' + HITBTC_REST_URL +
+                            GET_FEE_RESOURCE).json()
+        return [json["takeLiquidityRate"], json['provideLiquidityRate']]
 
     def balance(self):
         BALANCE_RESOURCE = "/api/2/trading/balance"

@@ -35,10 +35,25 @@ class Quoine(Exchange):
             }
             return self.session.post('https://' + url + resource,
                                      headers=headers, data=params).json()
+
+        def httpPut(url, resource, params, apikey):
+            payload = {'nonce': str(int("{:.6f}".format(
+                time.time()).replace('.', ''))), 'path': resource, 'token_id': self._apikey}
+            headers = {
+                'Accept': 'application/json',
+                'X-Quoine-API-Version': '2',
+                "X-Quoine-Auth": apikey,
+                "Sign": jwt.encode(payload, self._secretkey, 'HS256'),
+            }
+            return self.session.put('https://' + url + resource, headers=headers, data=params).json()
         super(Quoine, self).__init__(apikey, secretkey)
         self.session = requests.session()
         self.httpPost = httpPost
         self.httpGet = httpGet
+        self.httpPut = httpPut
+
+    def __del__(self):
+        self.session.close()
 
     def markets(self):
         MARKETS_RESOURCE = "/products"
@@ -106,3 +121,25 @@ class Quoine(Exchange):
         json = self.httpPost(QUOINE_REST_URL,
                              ORDER_RESOURCE, params, self._apikey)
         return json["id"]
+
+    def get_open_orders(self, symbol="BTC_JPY"):
+        OPEN_ORDERS_RESOURCE = "/orders"
+        params = {"status": "live"}
+        json = self.httpGet(QUOINE_REST_URL,
+                            OPEN_ORDERS_RESOURCE, params, self._apikey, self._secretkey)
+        return json
+
+    def cancel_order(self, symbol,order_id):
+        CANCEL_ORDERS_RESOURCE = "/orders/{0}/cancel".format(order_id)
+        self.httpPost(QUOINE_REST_URL, CANCEL_ORDERS_RESOURCE, {}, self._apikey, self._secretkey)
+
+    def get_fee(self, symbol = "BTC_JPY"):
+        GET_FEE_RESOURCE = "/products"
+
+        json = self.httpGet(QUOINE_REST_URL, GET_FEE_RESOURCE, {}, self._apikey, self._secretkey)
+        res = []
+        for j in json:
+            if j["currency_pair_code"] == symbol:
+                res = [j["taker_fee"], j["maker_fee"]]
+                break
+        return res

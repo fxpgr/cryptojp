@@ -60,6 +60,9 @@ class Coincheck(Exchange):
         self.httpGet = httpGet
         self.httpDelete = httpDelete
 
+    def __del__(self):
+        self.session.close()
+
     def markets(self):
         return ("btc_jpy",)
 

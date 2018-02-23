@@ -46,6 +46,9 @@ class Binance(Exchange):
         self.httpPost = httpPost
         self.httpGet = httpGet
 
+    def __del__(self):
+        self.session.close()
+
     @http_exception
     def markets(self):
         MARKETS_RESOURCE = "/api/v1/ticker/allBookTickers"

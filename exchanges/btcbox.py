@@ -45,6 +45,9 @@ class Btcbox(Exchange):
         self.httpPost = httpPost
         self.httpGet = httpGet
 
+    def __del__(self):
+        self.session.close()
+
     def markets(self):
         return ("btc_jpy", "ltc_jpy", "doge_jpy", "bch_jpy")
 
