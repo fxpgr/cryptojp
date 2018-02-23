@@ -41,10 +41,24 @@ class Coincheck(Exchange):
             }
             return self.session.post('https://' + url + resource,
                                      headers=headers, data=urlencode(params)).json()
+
+        def httpDelete(url, resource, params, apikey, secretkey):
+            nonce = int("{:.6f}".format(
+                time.time()).replace('.', ''))
+            text = str.encode(str(nonce) + "https://" + url +
+                              resource + urlencode(params))
+            headers = {
+                "ACCESS-KEY": apikey,
+                "ACCESS-NONCE": str(nonce),
+                "ACCESS-SIGN":  hmac.new(str.encode(secretkey), text, hashlib.sha256).hexdigest(),
+            }
+            return self.session.delete('https://' + url + resource, headers=headers, data=urlencode(params)).json()
+
         super(Coincheck, self).__init__(apikey, secretkey)
         self.session = requests.session()
         self.httpPost = httpPost
         self.httpGet = httpGet
+        self.httpDelete = httpDelete
 
     def markets(self):
         return ("btc_jpy",)
@@ -106,6 +120,23 @@ class Coincheck(Exchange):
         json = self.httpPost(COINCHECK_REST_URL,
                              ORDER_RESOURCE, params, self._apikey, self._secretkey)
         return json["id"]
+
+    def get_open_orders(self, symbol="BTC_JPY"):
+        OPEN_ORDERS_RESOURCE = "/api/exchange/orders/opens"
+        json = self.httpGet(COINCHECK_REST_URL,
+                            OPEN_ORDERS_RESOURCE, {}, self._apikey, self._secretkey)
+        return json
+
+    def cancel_order(self, symbol,order_id):
+        CANCEL_ORDERS_RESOURCE = "/api/exchange/orders/"+order_id
+        self.httpDelete(COINCHECK_REST_URL,
+                        CANCEL_ORDERS_RESOURCE, {}, self._apikey, self._secretkey)
+
+    def get_fee(self, symbol = "BTC_JPY"):
+        GET_FEE_RESOURCE = "/api/accounts"
+        json = self.httpGet(COINCHECK_REST_URL, GET_FEE_RESOURCE, {}, self._apikey, self._secretkey)
+
+        return [json["taker_fee"],json["maker_fee"]]
 
     def balance(self):
         BALANCE_RESOURCE = "/api/accounts/balance"

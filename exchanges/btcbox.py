@@ -91,6 +91,28 @@ class Btcbox(Exchange):
                              params, self._apikey, self._secretkey)
         return json["id"]
 
+    def get_open_orders(self, symbol="btc"):
+        OPEN_ORDERS_RESOURCE = "/api/v1/trade_list"
+        params = {
+            "coin": symbol,
+            "type": "open",
+        }
+        json = self.httpGet(BTCBOX_REST_URL,
+                            OPEN_ORDERS_RESOURCE, params, self._apikey, self._secretkey)
+        return json
+
+    def cancel_order(self, symbol,order_id):
+        CANCEL_ORDERS_RESOURCE = "/api/v1/trade_cancel"
+        params = {
+            "coin": symbol,
+            "id": order_id,
+        }
+        self.httpGet(BTCBOX_REST_URL,
+                     CANCEL_ORDERS_RESOURCE, params, self._apikey, self._secretkey)
+
+    def get_fee(self):
+        return 0
+
     def balance(self, currency_code="btc"):
         BALANCE_RESOURCE = "/api/v1/balance/"
         params = {'coin': currency_code.lower()}

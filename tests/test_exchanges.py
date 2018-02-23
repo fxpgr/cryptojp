@@ -15,6 +15,7 @@ BITFLYER_MOCK_ORDER = """{"child_order_acceptance_id": "JRF20150707-050237-63923
 BITFLYER_MOCK_BALANCE = """[{"currency_code":"JPY","amount":1024078,"available":508000},{"currency_code":"BTC","amount":10.24,"available":4.12},{"currency_code":"ETH","amount":20.48,"available":16.38}]"""
 BITFLYER_MOCK_OPEN_ORDERS = """[{"id":138398,"child_order_id":"JOR20150707-084555-022523","product_code":"BTC_JPY","side":"BUY","child_order_type":"LIMIT","price":30000,"average_price":30000,"size":0.1,"child_order_state":"COMPLETED","expire_date":"2015-07-14T07:25:52","child_order_date":"2015-07-07T08:45:53","child_order_acceptance_id":"JRF20150707-084552-031927","outstanding_size":0,"cancel_size":0,"executed_size":0.1,"total_commission":0},{"id":138397,"child_order_id":"JOR20150707-084549-022519","product_code":"BTC_JPY","side":"SELL","child_order_type":"LIMIT","price":30000,"average_price":0,"size":0.1,"child_order_state":"CANCELED","expire_date":"2015-07-14T07:25:47","child_order_date":"2015-07-07T08:45:47","child_order_acceptance_id":"JRF20150707-084547-396699","outstanding_size":0,"cancel_size":0.1,"executed_size":0,"total_commission":0}]"""
 BITFLYER_MOCK_CANCEL_ORDER = """[{"product_code":"BTC_JPY","child_order_id":"JOR20150707-055555-022222"},{"product_code":"BTC_JPY","child_order_acceptance_id":"JRF20150707-033333-099999"}]"""
+BITFLYER_MOCK_FEE = """{"commission_rate": 0.001}"""
 
 HITBTC_MOCK_BALANCE = """[{"currency":"ETH","available":"10.000000000","reserved":"0.560000000"},{"currency":"BTC","available":"0.010205869","reserved":"0"}]"""
 HITBTC_MOCK_ORDER = """{"id":0,"clientOrderId":"d8574207d9e3b16a4a5511753eeef175","symbol":"ETHBTC","side":"sell","status":"new","type":"limit","timeInForce":"GTC","quantity":"0.063","price":"0.046016","cumQuantity":"0.000","createdAt":"2017-05-15T17:01:05.092Z","updatedAt":"2017-05-15T17:01:05.092Z"}"""
@@ -78,6 +79,10 @@ class TestExchanges(TestCase):
         cancel_order_return.json.return_value = json.loads(BITFLYER_MOCK_CANCEL_ORDER)
         bitflyer.session.get.return_value = cancel_order_return
         bitflyer.cancel_order("BTC_USD", "test_order_id")
+        get_fee_return = Mock()
+        get_fee_return.json.return_value = json.loads(BITFLYER_MOCK_FEE)
+        bitflyer.session.get.return_value = get_fee_return
+        bitflyer.get_fee("BTC_USD")
 
     def test_poloniex(self):
         poloniex = NewExchange("poloniex", "", "")

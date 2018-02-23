@@ -116,8 +116,16 @@ class Bitflyer(Exchange):
             "product_code": symbol,
             "child_order_acceptance_id": order_id,
         }
-        self.httpGet(BITFLYER_REST_URL,
+        self.httpPost(BITFLYER_REST_URL,
                      CANCEL_ORDERS_RESOURCE, params, self._apikey, self._secretkey)
+
+    def get_fee(self, symbol = "BTC_JPY"):
+        GET_FEE_RESOURCE = "/v1/me/gettradingcommission"
+        params = {
+            "product_code": symbol,
+        }
+        json = self.httpGet(BITFLYER_REST_URL, GET_FEE_RESOURCE, params, self._apikey, self._secretkey)
+        return json["commission_rate"]
 
     def balance(self):
         BALANCE_RESOURCE = "/v1/me/getbalance"
