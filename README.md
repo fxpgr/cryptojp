@@ -8,12 +8,9 @@
 
 # cryptojp
 - == Python client for cryptocoin exchanges
-- welcome your contributions.
-
-## Description
-
 - cryptojp is a python client for crypto coin trade.
-- You can use this library on Python2 and Python3.
+- You can use this library on Python2/3.
+- welcome your contributions.
 
 ## HOW TO install
 
@@ -98,8 +95,23 @@ print(order_id)
 "JRF20150707-050237-639234"
 ```
 
+- - - 
 
-## Status
+### Cancel Order def cancel_order(item, order_id:
+
+**item**
+- use currency_pair getting from markets() func.
+
+**order_id**
+
+- the id you got when you orderd
+
+```python
+bitflyer.cancel_order("btc_jpy",order_id)
+```
+
+
+## Function list
 
 |                   | Bitflyer | Coincheck | Btcbox | Quoine | Kraken | Hitbtc | Binance | Poloniex |
 |-------------------|----------|-----------|--------|--------|--------|--------|---------|----------|
