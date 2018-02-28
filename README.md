@@ -1,3 +1,5 @@
+# cryptojp
+
 [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
 [![PyPI pyversions](https://img.shields.io/pypi/pyversions/cryptojp.svg)](https://pypi.python.org/pypi/cryptojp/)
 [![Build Status](https://travis-ci.org/airking05/cryptojp.svg?branch=master)](https://travis-ci.org/airking05/cryptojp)
@@ -5,12 +7,11 @@
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/Naereen/StrapDown.js/graphs/commit-activity)
 [![PyPI status](https://img.shields.io/pypi/status/cryptojp.svg)](https://pypi.python.org/pypi/cryptojp/)
 
-
-# cryptojp
 - == Python client for cryptocoin exchanges
 - cryptojp is a python client for crypto coin trade.
 - You can use this library on Python2/3.
 - welcome your contributions.
+
 
 ## HOW TO install
 
