@@ -1,17 +1,13 @@
-|made-with-python| |PyPI pyversions| |Build Status| |Coverage Status|
-|Maintenance| |PyPI status|
-
 cryptojp
 ========
 
+|made-with-python| |PyPI pyversions| |Build Status| |Coverage Status|
+|Maintenance| |PyPI status|
+
 -  == Python client for cryptocoin exchanges
--  welcome your contributions.
-
-Description
------------
-
 -  cryptojp is a python client for crypto coin trade.
--  You can use this library on Python2 and Python3.
+-  You can use this library on Python2/3.
+-  welcome your contributions.
 
 HOW TO install
 --------------
@@ -20,7 +16,7 @@ HOW TO install
 
 or
 
-``pip install git+https://github.com/airking05/cryptojp``
+``pip install git+https://github.com/fxpgr/cryptojp``
 
 HOW TO USE
 ----------
@@ -98,8 +94,23 @@ Order def order(item, order_type, side, price, size):
      
     "JRF20150707-050237-639234"
 
-Status
-------
+--------------
+
+Cancel Order def cancel_order(item, order_id:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**item** - use currency_pair getting from markets() func.
+
+**order_id**
+
+-  the id you got when you orderd
+
+.. code:: python
+
+    bitflyer.cancel_order("btc_jpy",order_id)
+
+Function list
+-------------
 
 +-------+-------+-------+-------+-------+-------+-------+-------+-------+
 |       | Bitfl | Coinc | Btcbo | Quoin | Krake | Hitbt | Binan | Polon |

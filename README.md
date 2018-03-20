@@ -19,7 +19,7 @@
 
 or
 
-```pip install git+https://github.com/airking05/cryptojp```
+```pip install git+https://github.com/fxpgr/cryptojp```
 
 
 ## HOW TO USE
