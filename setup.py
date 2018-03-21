@@ -168,5 +168,5 @@ setup(
     #        'sample=sample:main',
     #    ],
     #},
-    test_suite='test_exchanges.suite'
+    test_suite='test_cryptojp.suite'
 )
