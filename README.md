@@ -11,6 +11,7 @@
 - cryptojp is a python client for crypto coin trade.
 - You can use this library on Python2/3.
 - welcome your contributions.
+- document :http://cryptojp.readthedocs.io/en/latest/
 
 
 ## HOW TO install
@@ -42,7 +43,6 @@ poloniex = NewExchange("poloniex", APIKEY, SECRET_KEY)
 - item arg is optional.
 - You can use currency_pair getting from markets() func.
 - This returns namedtuple("Ticker", ("timestamp", "last", "bid", "ask", "high", "low", "volume")).
-- document :http://cryptojp.readthedocs.io/en/latest/
 
 ```python
  
