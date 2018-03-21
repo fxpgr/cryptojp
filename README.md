@@ -39,23 +39,7 @@ poloniex = NewExchange("poloniex", APIKEY, SECRET_KEY)
 
 - - -
 
-### Ticker def ticker(item = currency_pair):
-- item arg is optional.
-- You can use currency_pair getting from markets() func.
-- This returns namedtuple("Ticker", ("timestamp", "last", "bid", "ask", "high", "low", "volume")).
-
-```python
- 
-tick = bitflyer.ticker("btc_jpy")
-print(tick)
-  
-Ticker(timestamp='2018-01-04T10:54:01.677', last=1779000.0, bid=1779000.0, ask=1779099.0, high=None, low=None, volume=99020.50507241)
- 
-print(tick.last)
-# tick.last is a float data 
-1779000.0
-
-```
+- See document :http://cryptojp.readthedocs.io/en/latest/
 
 - - -
 
