@@ -43,6 +43,10 @@ class TestExchanges(TestCase):
     def test_realcurrency(self):
         realcurrency = NewExchange("realcurrency", "", "")
 
+    def test_bitfinex(self):
+        bitfinex = NewExchange("bitfinex", "", "")
+        bitfinex.markets()
+
     def test_bitflyer(self):
         bitflyer = NewExchange("bitflyer", "", "")
         bitflyer.markets()

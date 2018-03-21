@@ -114,13 +114,13 @@ bitflyer.cancel_order("btc_jpy",order_id)
 
 ## Function list
 
-|                   | Bitflyer | Coincheck | Btcbox | Quoine | Kraken | Hitbtc | Binance | Poloniex |
-|-------------------|----------|-----------|--------|--------|--------|--------|---------|----------|
-| ticker()          | ✓        | ✓         | ✓      | ✓      | ✓      | ✓      | ✓       | ✓        |
-| markets()         | ✓        | ✓         | ✓      | ✓      | ✓      | ✓      | ✓       | ✓        |
-| board()           | ✓        | ✓         | ✓      | ✓      | ✓      | ✓      | ✓       | ✓        |
-| order()           | ✓        | ✓         | ✓      | ✓      | ✓      | ✓      | ✓       | ✓        |
-| balance()         | ✓        | ✓         | ✓      | ✓      | ✓      | ✓      | ✓       | ✓        |
-| get_open_orders() | ✓        | ✓         | ✓      | ✓      | ✓      | ✓      | ✓       | ✓        |
-| cancel_order()    | ✓        | ✓         | ✓      | ✓      | ✓      | ✓      | ✓       | ✓        |
-| get_fee()         | ✓        | ✓         | ✓      | ✓      | ✓      | ✓      | ✓       | ✓        |
+|                   | Bitflyer | Coincheck | Btcbox | Quoine | Kraken | Hitbtc | Binance | Poloniex | Bitfinex |
+|-------------------|----------|-----------|--------|--------|--------|--------|---------|----------|----------|
+| ticker()          | ✓        | ✓         | ✓      | ✓      | ✓      | ✓      | ✓       | ✓        | ✓        |
+| markets()         | ✓        | ✓         | ✓      | ✓      | ✓      | ✓      | ✓       | ✓        | ✓        | 
+| board()           | ✓        | ✓         | ✓      | ✓      | ✓      | ✓      | ✓       | ✓        | ✓        | 
+| order()           | ✓        | ✓         | ✓      | ✓      | ✓      | ✓      | ✓       | ✓        | -        | 
+| balance()         | ✓        | ✓         | ✓      | ✓      | ✓      | ✓      | ✓       | ✓        | -        | 
+| get_open_orders() | ✓        | ✓         | ✓      | ✓      | ✓      | ✓      | ✓       | ✓        | -        | 
+| cancel_order()    | ✓        | ✓         | ✓      | ✓      | ✓      | ✓      | ✓       | ✓        | -        | 
+| get_fee()         | ✓        | ✓         | ✓      | ✓      | ✓      | ✓      | ✓       | ✓        | -        | 

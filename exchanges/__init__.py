@@ -5,6 +5,7 @@ from . import kraken
 from . import quoine
 from . import hitbtc
 from . import binance
+from . import bitfinex
 from . import poloniex
 from . import realcurrency
 
@@ -26,6 +27,8 @@ def NewExchange(exchange_name, apikey, secretkey):
         return binance.Binance(apikey, secretkey)
     elif exchange_name == "poloniex":
         return poloniex.Poloniex(apikey, secretkey)
+    elif exchange_name == "bitfinex":
+        return bitfinex.Bitfinex(apikey, secretkey)
     elif exchange_name == "realcurrency":
         return realcurrency.RealCurrency(apikey, secretkey)
     print("not implemented")

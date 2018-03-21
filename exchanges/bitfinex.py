@@ -12,32 +12,38 @@ import requests
 import hmac
 import hashlib
 import json
+import base64
 BITFINEX_REST_URL = 'api.bitfinex.com'
 
 
 class Bitfinex(Exchange):
     def __init__(self, apikey, secretkey):
         def httpGet(url, resource, params, apikey, secretkey):
-            timestamp = str(time.time())
-            text = str.encode(timestamp + "GET" + resource + urlencode(params))
+            nonce = str(int(round(time.time() * 10000)))
+            params["nonce"] = nonce
+            params["request"] = resource
+            data = base64.b64encode(json.dumps(params).encode())
+            sign = hmac.new(self._secretkey,data,hashlib.sha384).hexdigest()
+
             headers = {
-                "ACCESS-KEY": apikey,
-                "ACCESS-TIMESTAMP": timestamp,
-                "ACCESS-SIGN":  hmac.new(str.encode(secretkey), text, hashlib.sha256).hexdigest(),
-                'Content-Type': 'application/json',
+                "X-BFX-APIKEY": self._apikey,
+                "X-BFX-SIGNATURE": sign,
+                "AX-BFX-PAYLOAD":  data,
             }
             return self.session.get('https://' + url + resource,
-                                    headers=headers, data=params).json()
+                                     headers=headers, data=json.dumps(params)).json()
 
         def httpPost(url, resource, params, apikey, secretkey):
-            timestamp = str(time.time())
-            text = str.encode(timestamp + "POST" +
-                              resource + json.dumps(params))
+            nonce = str(int(round(time.time() * 10000)))
+            params["nonce"] = nonce
+            params["request"] = resource
+            data = base64.b64encode(json.dumps(params).encode())
+            sign = hmac.new(self._secretkey,data,hashlib.sha384).hexdigest()
+
             headers = {
-                "ACCESS-KEY": apikey,
-                "ACCESS-TIMESTAMP": timestamp,
-                "ACCESS-SIGN": hmac.new(str.encode(secretkey), text, hashlib.sha256).hexdigest(),
-                'Content-Type': 'application/json',
+                "X-BFX-APIKEY": self._apikey,
+                "X-BFX-SIGNATURE": sign,
+                "AX-BFX-PAYLOAD":  data,
             }
             return self.session.post('https://' + url + resource,
                                      headers=headers, data=json.dumps(params)).json()
@@ -51,90 +57,52 @@ class Bitfinex(Exchange):
 
     @http_exception
     def markets(self):
-        MARKETS_RESOURCE = "/v1/markets"
+        MARKETS_RESOURCE = "/v1/symbols"
         json = self.session.get('https://' + BITFINEX_REST_URL +
                                 MARKETS_RESOURCE).json()
-        return tuple([j["product_code"] for j in json])
+        return tuple(json)
 
-    def ticker(self, item=''):
-        TICKER_RESOURCE = "/v1/ticker"
-        params = {}
-        if item:
-            params["product_code"] = item[0:3] + "_" + item[3:6]
+    def ticker(self, symbol=''):
+        TICKER_RESOURCE = "/v1/pubticker/"+symbol
+
         json = self.session.get('https://' + BITFINEX_REST_URL +
-                                TICKER_RESOURCE, data=params).json()
+                                TICKER_RESOURCE).json()
         return Ticker(
-            timestamp=json["timestamp"],
-            last=float(json["ltp"]),
-            high=None,
-            low=None,
-            bid=float(json["best_bid"]),
-            ask=float(json["best_ask"]),
+            timestamp=int(float(json["timestamp"])),
+            last=float(json["last_price"]),
+            high=float(json["high"]),
+            low=float(json["low"]),
+            bid=float(json["bid"]),
+            ask=float(json["ask"]),
             volume=float(json["volume"])
         )
 
-    def board(self, item=''):
-        BOARD_RESOURCE = "/v1/board"
+    def board(self, symbol=''):
+        BOARD_RESOURCE = "/v1/book/"+symbol
         params = {}
+        params["group"] = 1
         json = self.session.get('https://' + BITFINEX_REST_URL +
                                 BOARD_RESOURCE, data=params).json()
+
         return Board(
-            asks=[Ask(price=float(ask["price"]), size=float(ask["size"]))
+            asks=[Ask(price=float(ask["price"]), size=float(ask["amount"]))
                   for ask in json["asks"]],
-            bids=[Bid(price=float(bid["price"]), size=float(bid["size"]))
+            bids=[Bid(price=float(bid["price"]), size=float(bid["amount"]))
                   for bid in json["bids"]],
-            mid_price=float(json["mid_price"])
+            mid_price=(float(json["bids"][0]["price"])+float(json["asks"][0]["price"]))/2
         )
 
     def order(self, item, order_type, side, price, size):
-        ORDER_RESOURCE = "/v1/me/sendchildorder"
-        params = {
-            "product_code": item,
-            "child_order_type": order_type.upper(),
-            "side": side.upper(),
-            "price": price,
-            "size": size
-        }
-        if order_type.lower() != "limit":
-            params.pop('price')
+        raise Exception("not implemented")
 
-        json = self.httpPost(BITFINEX_REST_URL,
-                             ORDER_RESOURCE, params, self._apikey, self._secretkey)
-        return json["child_order_acceptance_id"]
-
-    def get_open_orders(self, symbol="BTC_JPY"):
-        OPEN_ORDERS_RESOURCE = "/v1/me/getchildorders"
-        params = {"child_order_state": "ACTIVE"}
-        if symbol:
-            params["product_code"]= symbol
-        json = self.httpGet(BITFINEX_REST_URL,
-                            OPEN_ORDERS_RESOURCE, params, self._apikey, self._secretkey)
-        return json
+    def get_open_orders(self, symbol="btcusd"):
+        raise Exception("not implemented")
 
     def cancel_order(self, symbol,order_id):
-        CANCEL_ORDERS_RESOURCE = "/v1/me/cancelchildorder"
-        params = {
-            "product_code": symbol,
-            "child_order_acceptance_id": order_id,
-        }
-        self.httpPost(BITFINEX_REST_URL,
-                     CANCEL_ORDERS_RESOURCE, params, self._apikey, self._secretkey)
+        raise Exception("not implemented")
 
-    def get_fee(self, symbol = "BTC_JPY"):
-        GET_FEE_RESOURCE = "/v1/me/gettradingcommission"
-        params = {
-            "product_code": symbol,
-        }
-        json = self.httpGet(BITFINEX_REST_URL, GET_FEE_RESOURCE, params, self._apikey, self._secretkey)
-        return json["commission_rate"]
+    def get_fee(self, symbol = "btcusd"):
+        raise Exception("not implemented")
 
     def balance(self):
-        BALANCE_RESOURCE = "/v1/me/getbalance"
-        params = {
-        }
-        json = self.httpGet(BITFINEX_REST_URL,
-                            BALANCE_RESOURCE, params, self._apikey, self._secretkey)
-        balances = {}
-        for j in json:
-            balances[j['currency_code']] = [j["amount"], j["available"]]
-        return balances
+        raise Exception("not implemented")
