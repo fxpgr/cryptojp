@@ -42,7 +42,7 @@ poloniex = NewExchange("poloniex", APIKEY, SECRET_KEY)
 - item arg is optional.
 - You can use currency_pair getting from markets() func.
 - This returns namedtuple("Ticker", ("timestamp", "last", "bid", "ask", "high", "low", "volume")).
-
+- document :http://cryptojp.readthedocs.io/en/latest/
 
 ```python
  
