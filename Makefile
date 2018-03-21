@@ -4,3 +4,7 @@ test:
 
 rst:
 	pandoc README.md -o README.rst
+
+docs:
+	cd docs && make html
+	

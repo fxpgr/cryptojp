@@ -49,14 +49,12 @@ class Binance(Exchange):
     def __del__(self):
         self.session.close()
 
-    @http_exception
     def markets(self):
         MARKETS_RESOURCE = "/api/v1/ticker/allBookTickers"
         json = self.session.get('https://' + BINANCE_REST_URL +
                                 MARKETS_RESOURCE).json()
         return tuple([j["symbol"] for j in json])
 
-    @http_exception
     def ticker(self, item='BTCUSDT'):
         TICKER_RESOURCE = "/api/v1/klines"
         params = {

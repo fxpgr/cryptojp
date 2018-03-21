@@ -5,7 +5,7 @@ from unittest import TestCase
 
 from mock import Mock
 
-from exchanges import NewExchange
+from cryptojp import NewExchange
 
 KEYS_GLOBAL = './keys.json'
 KEYS_LOCAL = './keys.local.json'

@@ -27,7 +27,7 @@ or
 ### Initalizing
 
 ```python
-from exchanges import NewExchange
+from cryptojp import NewExchange
  
 APIKEY = "YOUR_API_KEY"
 SECRET_KEY = "YOUR_SECRET_KEY"

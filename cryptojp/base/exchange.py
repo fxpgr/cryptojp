@@ -6,6 +6,27 @@ class Exchange(object):
         self._apikey = apikey
         self._secretkey = secretkey
 
+    def markets(self):
+        raise Exception("not implemented")
+
+    def ticker(self, item='BTCUSDT'):
+        raise Exception("not implemented")
+
+    def board(self,item='BTCUSDT'):
+        raise Exception("not implemented")
+
+    def order(self,item, order_type, side, price, size):
+        raise Exception("not implemented")
+
+    def balance(self):
+        raise Exception("not implemented")
+
+    def get_open_orders(self, symbol="BTCUSDT"):
+        raise Exception("not implemented")
+
+    def cancel_order(self, symbol,order_id):
+        raise Exception("not implemented")
+
 
 Ticker = namedtuple("Ticker", ("timestamp", "last", "bid",
                                "ask", "high", "low", "volume"))

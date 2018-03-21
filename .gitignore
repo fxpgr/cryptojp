@@ -13,6 +13,7 @@ __pycache__/
 # due to using tox and pytest
 .tox
 .cache
+.pytest_cache
 
 # setting things to ignore
 *.pyc
@@ -20,3 +21,5 @@ settings.py
 keys.local.json
 
 .idea/*
+
+docs/_build

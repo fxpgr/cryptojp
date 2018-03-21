@@ -55,7 +55,6 @@ class Bitfinex(Exchange):
     def __del__(self):
         self.session.close()
 
-    @http_exception
     def markets(self):
         MARKETS_RESOURCE = "/v1/symbols"
         json = self.session.get('https://' + BITFINEX_REST_URL +
