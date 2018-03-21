@@ -8,6 +8,7 @@ cryptojp
 -  cryptojp is a python client for crypto coin trade.
 -  You can use this library on Python2/3.
 -  welcome your contributions.
+-  document :http://cryptojp.readthedocs.io/en/latest/
 
 HOW TO install
 --------------
@@ -154,10 +155,10 @@ Function list
    :target: https://www.python.org/
 .. |PyPI pyversions| image:: https://img.shields.io/pypi/pyversions/cryptojp.svg
    :target: https://pypi.python.org/pypi/cryptojp/
-.. |Build Status| image:: https://travis-ci.org/airking05/cryptojp.svg?branch=master
-   :target: https://travis-ci.org/airking05/cryptojp
-.. |Coverage Status| image:: https://coveralls.io/repos/github/airking05/cryptojp/badge.svg?branch=master&date=20180130_2
-   :target: https://coveralls.io/github/airking05/cryptojp?branch=master
+.. |Build Status| image:: https://travis-ci.org/fxpgr/cryptojp.svg?branch=master
+   :target: https://travis-ci.org/fxpgr/cryptojp
+.. |Coverage Status| image:: https://coveralls.io/repos/github/fxpgr/cryptojp/badge.svg?branch=master&date=20180130_2
+   :target: https://coveralls.io/github/fxpgr/cryptojp?branch=master
 .. |Maintenance| image:: https://img.shields.io/badge/Maintained%3F-yes-green.svg
    :target: https://GitHub.com/Naereen/StrapDown.js/graphs/commit-activity
 .. |PyPI status| image:: https://img.shields.io/pypi/status/cryptojp.svg
