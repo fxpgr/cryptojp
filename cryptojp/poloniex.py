@@ -35,10 +35,16 @@ class Poloniex(Exchange):
 
     def markets(self):
         MARKETS_RESOURCE = "/public?command=returnTicker"
-
         json = self.session.get('https://' + POLONIEX_REST_URL +
                                 MARKETS_RESOURCE).json()
-        return tuple(json.keys())
+        tmp = tuple([j.split("_") for j in json.keys()])
+        return [CurrencyPair(trading=t[1],settlement=t[0]) for t in tmp]
+
+    def settlements(self):
+        SETTLEMENTS_RESOURCE = "/public?command=returnTicker"
+        js = self.session.get('https://' + POLONIEX_REST_URL +
+                              SETTLEMENTS_RESOURCE).json()
+        return tuple(set([c.split("_")[0] for c in js.keys()]))
 
     def ticker(self, item='USDT_BTC'):
         TICKER_RESOURCE = "/public?command=returnTicker"
@@ -69,12 +75,12 @@ class Poloniex(Exchange):
             mid_price=(float(json["asks"][0][0])+float(json["bids"][0][0]))/2
         )
 
-    def order(self, item, order_type, side, price, size):
+    def order(self, trading, settlement, order_type, side, price, size):
         ORDER_RESOURCE = "/tradingApi"
 
         params = {
             "command": side.lower(),
-            "currencyPair": item,
+            "currencyPair": settlement.upper() + "_" + trading.upper(),
             "rate": str(price),
             "amount": str(size),
         }

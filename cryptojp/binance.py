@@ -50,10 +50,16 @@ class Binance(Exchange):
         self.session.close()
 
     def markets(self):
-        MARKETS_RESOURCE = "/api/v1/ticker/allBookTickers"
+        MARKETS_RESOURCE = "/api/v1/exchangeInfo"
         json = self.session.get('https://' + BINANCE_REST_URL +
                                 MARKETS_RESOURCE).json()
-        return tuple([j["symbol"] for j in json])
+        return tuple([CurrencyPair(trading=j["baseAsset"], settlement=j["quoteAsset"]) for j in json["symbols"]])
+
+    def settlements(self):
+        SETTLEMENTS_RESOURCE = "/api/v1/exchangeInfo"
+        json = self.session.get('https://' + BINANCE_REST_URL +
+                                SETTLEMENTS_RESOURCE).json()
+        return tuple(set([j["quoteAsset"] for j in json["symbols"]]))
 
     def ticker(self, item='BTCUSDT'):
         TICKER_RESOURCE = "/api/v1/klines"
@@ -89,12 +95,10 @@ class Binance(Exchange):
             mid_price=(float(json["asks"][0][0])+float(json["bids"][0][0]))/2
         )
 
-    def order(self,item, order_type, side, price, size):
+    def order(self,trading, settlement, order_type, side, price, size):
         ORDER_RESOURCE = "/v3/order"
-        if not item:
-            raise SymbolNotFound
         params = {
-            "symbol": item,
+            "symbol": trading+settlement,
             "side": side,
             "type": order_type.upper(),
             "timeInForce": "GTC",

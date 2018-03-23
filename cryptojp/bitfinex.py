@@ -59,7 +59,10 @@ class Bitfinex(Exchange):
         MARKETS_RESOURCE = "/v1/symbols"
         json = self.session.get('https://' + BITFINEX_REST_URL +
                                 MARKETS_RESOURCE).json()
-        return tuple(json)
+        return tuple([j.upper() for j in json])
+
+    def settlements(self):
+        return ("btc", "usd", "eth")
 
     def ticker(self, symbol=''):
         TICKER_RESOURCE = "/v1/pubticker/"+symbol

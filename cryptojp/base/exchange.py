@@ -30,15 +30,13 @@ class Exchange(object):
 
 Ticker = namedtuple("Ticker", ("timestamp", "last", "bid",
                                "ask", "high", "low", "volume"))
+CurrencyPair = namedtuple("CurrencyPair", ("trading","settlement"))
 
 Markets = namedtuple("Markets", ())
-
 Ask = namedtuple("Ask", ("price", "size"))
 Bid = namedtuple("Bid", ("price", "size"))
 Board = namedtuple("Board", ("asks", "bids", "mid_price"))
-
 Balance = namedtuple("Balance", ("amount", "available"))
-
 
 ALL_EXCHANGES = (
     "bitflyer",

@@ -19,7 +19,13 @@ class Hitbtc(Exchange):
         MARKETS_RESOURCE = "/api/2/public/symbol"
         json = self.session.get('https://' + HITBTC_REST_URL +
                                 MARKETS_RESOURCE).json()
-        return tuple([j["id"] for j in json])
+        return list([CurrencyPair(trading=j["baseCurrency"], settlement=j["quoteCurrency"]) for j in json])
+
+    def settlements(self):
+        SETTLEMENTS_RESOURCE = "/api/2/public/symbol"
+        json = self.session.get('https://' + HITBTC_REST_URL +
+                                SETTLEMENTS_RESOURCE).json()
+        return list(set([j["quoteCurrency"] for j in json]))
 
     def ticker(self, item='BTCUSD'):
         TICKER_RESOURCE = "/api/2/public/ticker/" + item
@@ -46,11 +52,11 @@ class Hitbtc(Exchange):
                   for bid in json["bid"]],
             mid_price=(float(json["ask"][0]["price"]) + float(json["bid"][0]["price"])) / 2)
 
-    def order(self, item, order_type, side, price, size):
+    def order(self, trading, settlement, order_type, side, price, size):
         ORDER_RESOURCE = "/api/2/order"
 
         params = {
-            "symbol": item.lower(),
+            "symbol": trading.lower() + settlement.lower(),
             "side": side.lower(),
             "quantity": size,
             "price": price
