@@ -49,7 +49,12 @@ class Btcbox(Exchange):
         self.session.close()
 
     def markets(self):
-        return ("btc_jpy", "ltc_jpy", "doge_jpy", "bch_jpy")
+        ret = []
+        ret.append(CurrencyPair(trading="BTC", settlement="JPY"))
+        ret.append(CurrencyPair(trading="LTC", settlement="JPY"))
+        ret.append(CurrencyPair(trading="DOGE", settlement="JPY"))
+        ret.append(CurrencyPair(trading="BCH", settlement="JPY"))
+        return ret
 
     def ticker(self, item=''):
         TICKER_RESOURCE = "/api/v1/ticker"
@@ -82,13 +87,13 @@ class Btcbox(Exchange):
                        float(json["bids"][0][0])) / 2
         )
 
-    def order(self, item, order_type, side, price, size):
+    def order(self, trading,settlement, order_type, side, price, size):
         ORDER_RESOURCE = "/api/v1/trade_add"
         params = {
             "amount": size,
             "side": side.lower(),
             "price": price,
-            "coin": item,
+            "coin": trading.lower()+"_"+settlement.upper(),
         }
         json = self.httpPost(BTCBOX_REST_URL, ORDER_RESOURCE,
                              params, self._apikey, self._secretkey)

@@ -61,7 +61,7 @@ class Quoine(Exchange):
                                 MARKETS_RESOURCE).json()
         li = [[j['id'], j['currency_pair_code']] for j in json]
         self.market_dict = dict(li)
-        return tuple([j['currency_pair_code'] for j in json])
+        return tuple([CurrencyPair(trading=j['base_currency'], settlement=j["quoted_currency"]) for j in json])
 
     def ticker(self, pair='BTCUSD'):
         TICKER_RESOURCE = "/products/code/CASH/%s" % (pair)
@@ -109,11 +109,11 @@ class Quoine(Exchange):
                 float(j["balance"]), float(j["balance"])]
         return balances
 
-    def order(self, item, order_type, side, price, size):
+    def order(self, trading,settlement, order_type, side, price, size):
         ORDER_RESOURCE = "/orders"
         params = {
             "order_type": order_type.lower(),
-            "product_id": item,
+            "product_id": trading+settlement,
             "side": side.lower(),
             "price": price,
             "quantity": size

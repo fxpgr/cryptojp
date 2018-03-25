@@ -53,7 +53,8 @@ class Bitflyer(Exchange):
         MARKETS_RESOURCE = "/v1/markets"
         json = self.session.get('https://' + BITFLYER_REST_URL +
                                 MARKETS_RESOURCE).json()
-        return tuple([j["product_code"] for j in json])
+        product_codes = [j["product_code"].split("_") for j in json if len(j["product_code"].split("_"))==2]
+        return tuple([CurrencyPair(trading=p[0], settlement=p[1]) for p in product_codes])
 
     def ticker(self, item=''):
         TICKER_RESOURCE = "/v1/ticker"
@@ -85,10 +86,10 @@ class Bitflyer(Exchange):
             mid_price=float(json["mid_price"])
         )
 
-    def order(self, item, order_type, side, price, size):
+    def order(self, trading,settlement, order_type, side, price, size):
         ORDER_RESOURCE = "/v1/me/sendchildorder"
         params = {
-            "product_code": item,
+            "product_code": trading+"_"+settlement,
             "child_order_type": order_type.upper(),
             "side": side.upper(),
             "price": price,

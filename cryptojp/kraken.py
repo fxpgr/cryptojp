@@ -41,7 +41,7 @@ class Kraken(Exchange):
         MARKETS_RESOURCE = "/0/public/AssetPairs"
         json = self.session.get('https://' + KRAKEN_REST_URL +
                                 MARKETS_RESOURCE).json()
-        return tuple([c for c in json['result']])
+        return tuple([CurrencyPair(trading=json["result"][c]["base"],settlement=json["result"][c]["quote"]) for c in json['result']])
 
     def ticker(self, pair='XXBTZJPY'):
         TICKER_RESOURCE = "/0/public/Ticker?pair=" + pair
@@ -72,10 +72,10 @@ class Kraken(Exchange):
                        float(json["result"][pair]["bids"][0][0])) / 2
         )
 
-    def order(self, item, order_type, side, price, size):
+    def order(self, trading, settlement, order_type, side, price, size):
         ORDER_RESOURCE = "/0/private/AddOrder"
         params = {
-            "pair": item,
+            "pair": trading+settlement,
             "type": side,
             "order_type": order_type,
             "price": price,

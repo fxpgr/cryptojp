@@ -64,7 +64,7 @@ class Coincheck(Exchange):
         self.session.close()
 
     def markets(self):
-        return ("btc_jpy",)
+        return (CurrencyPair(trading="BTC", settlement="JPY"),)
 
     def ticker(self, item=''):
         TICKER_RESOURCE = "/api/ticker"
@@ -95,27 +95,25 @@ class Coincheck(Exchange):
                        float(json["bids"][0][0])) / 2
         )
 
-    def order(self, item, order_type, side, price, size):
-        if item != "btc_jpy":
-            return
+    def order(self, trading, settlement, order_type, side, price, size):
         ORDER_RESOURCE = "/api/exchange/orders"
         if order_type.lower() == 'market':
             side = 'market_' + side
             if 'buy' in side.lower():
                 params = {
-                    "pair": item,
+                    "pair": trading.lower()+"_"+settlement.upper(),
                     "order_type": side,
                     "market_buy_amount": size
                 }
             else:
                 params = {
-                    "pair": item,
+                    "pair": trading.lower()+"_"+settlement.upper(),
                     "order_type": side,
                     "amount": size
                 }
         else:
             params = {
-                "pair": item,
+                "pair": trading.lower()+"_"+settlement.upper(),
                 "order_type": side,
                 "rate": price,
                 "amount": size
