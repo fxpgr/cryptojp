@@ -8,5 +8,6 @@ def http_exception(func):
             raise(e)
     return wrapper
 
+
 class SymbolNotFound(Exception):
     pass

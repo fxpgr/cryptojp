@@ -24,7 +24,7 @@ class Coincheck(Exchange):
             headers = {
                 "ACCESS-KEY": apikey,
                 "ACCESS-NONCE": str(nonce),
-                "ACCESS-SIGN":  hmac.new(str.encode(secretkey), text, hashlib.sha256).hexdigest(),
+                "ACCESS-SIGN": hmac.new(str.encode(secretkey), text, hashlib.sha256).hexdigest(),
             }
             return self.session.get('https://' + url + resource,
                                     headers=headers, data=urlencode(params)).json()
@@ -37,7 +37,7 @@ class Coincheck(Exchange):
             headers = {
                 "ACCESS-KEY": apikey,
                 "ACCESS-NONCE": str(nonce),
-                "ACCESS-SIGN":  hmac.new(str.encode(secretkey), text, hashlib.sha256).hexdigest(),
+                "ACCESS-SIGN": hmac.new(str.encode(secretkey), text, hashlib.sha256).hexdigest(),
             }
             return self.session.post('https://' + url + resource,
                                      headers=headers, data=urlencode(params)).json()
@@ -50,7 +50,7 @@ class Coincheck(Exchange):
             headers = {
                 "ACCESS-KEY": apikey,
                 "ACCESS-NONCE": str(nonce),
-                "ACCESS-SIGN":  hmac.new(str.encode(secretkey), text, hashlib.sha256).hexdigest(),
+                "ACCESS-SIGN": hmac.new(str.encode(secretkey), text, hashlib.sha256).hexdigest(),
             }
             return self.session.delete('https://' + url + resource, headers=headers, data=urlencode(params)).json()
 
@@ -66,7 +66,7 @@ class Coincheck(Exchange):
     def markets(self):
         return (CurrencyPair(trading="BTC", settlement="JPY"),)
 
-    def ticker(self, item=''):
+    def ticker(self, trading, settlement):
         TICKER_RESOURCE = "/api/ticker"
         json = self.session.get('https://' + COINCHECK_REST_URL +
                                 TICKER_RESOURCE).json()
@@ -101,19 +101,19 @@ class Coincheck(Exchange):
             side = 'market_' + side
             if 'buy' in side.lower():
                 params = {
-                    "pair": trading.lower()+"_"+settlement.upper(),
+                    "pair": trading.lower() + "_" + settlement.upper(),
                     "order_type": side,
                     "market_buy_amount": size
                 }
             else:
                 params = {
-                    "pair": trading.lower()+"_"+settlement.upper(),
+                    "pair": trading.lower() + "_" + settlement.upper(),
                     "order_type": side,
                     "amount": size
                 }
         else:
             params = {
-                "pair": trading.lower()+"_"+settlement.upper(),
+                "pair": trading.lower() + "_" + settlement.upper(),
                 "order_type": side,
                 "rate": price,
                 "amount": size
@@ -128,16 +128,16 @@ class Coincheck(Exchange):
                             OPEN_ORDERS_RESOURCE, {}, self._apikey, self._secretkey)
         return json
 
-    def cancel_order(self, symbol,order_id):
-        CANCEL_ORDERS_RESOURCE = "/api/exchange/orders/"+order_id
+    def cancel_order(self, symbol, order_id):
+        CANCEL_ORDERS_RESOURCE = "/api/exchange/orders/" + order_id
         self.httpDelete(COINCHECK_REST_URL,
                         CANCEL_ORDERS_RESOURCE, {}, self._apikey, self._secretkey)
 
-    def get_fee(self, symbol = "BTC_JPY"):
+    def get_fee(self, symbol="BTC_JPY"):
         GET_FEE_RESOURCE = "/api/accounts"
         json = self.httpGet(COINCHECK_REST_URL, GET_FEE_RESOURCE, {}, self._apikey, self._secretkey)
 
-        return [json["taker_fee"],json["maker_fee"]]
+        return [json["taker_fee"], json["maker_fee"]]
 
     def balance(self):
         BALANCE_RESOURCE = "/api/accounts/balance"

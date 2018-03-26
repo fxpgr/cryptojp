@@ -27,8 +27,8 @@ class Hitbtc(Exchange):
                                 SETTLEMENTS_RESOURCE).json()
         return list(set([j["quoteCurrency"] for j in json]))
 
-    def ticker(self, item='BTCUSD'):
-        TICKER_RESOURCE = "/api/2/public/ticker/" + item
+    def ticker(self, trading, settlement):
+        TICKER_RESOURCE = "/api/2/public/ticker/" + trading.lower() + settlement.lower()
         json = self.session.get('https://' + HITBTC_REST_URL +
                                 TICKER_RESOURCE).json()
         return Ticker(
@@ -75,15 +75,15 @@ class Hitbtc(Exchange):
                                 OPEN_ORDERS_RESOURCE).json()
         return json
 
-    def cancel_order(self, symbol,order_id):
-        CANCEL_ORDER_RESOURCE = "/api/2/order/"+order_id
+    def cancel_order(self, symbol, order_id):
+        CANCEL_ORDER_RESOURCE = "/api/2/order/" + order_id
         self.session.delete('https://' + HITBTC_REST_URL +
                             CANCEL_ORDER_RESOURCE).json()
 
-    def get_fee(self, symbol = "BTCUSD"):
-        GET_FEE_RESOURCE = "/api/2/trading/fee/"+symbol
+    def get_fee(self, symbol="BTCUSD"):
+        GET_FEE_RESOURCE = "/api/2/trading/fee/" + symbol
         json = self.session.get('https://' + HITBTC_REST_URL +
-                            GET_FEE_RESOURCE).json()
+                                GET_FEE_RESOURCE).json()
         return [json["takeLiquidityRate"], json['provideLiquidityRate']]
 
     def balance(self):

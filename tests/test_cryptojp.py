@@ -51,14 +51,13 @@ class TestExchanges(TestCase):
         bitflyer = NewExchange("bitflyer", "", "")
         bitflyer.markets()
         bitflyer.board()
-        bitflyer.ticker()
-        bitflyer.ticker("BTC_JPY")
+        bitflyer.ticker("BTC", "JPY")
 
         bitflyer = NewExchange("bitflyer", "", "")
         bitflyer.httpPost = Mock()
         bitflyer.httpPost.return_value = json.loads(BITFLYER_MOCK_ORDER)
-        bitflyer.order("ETH","BTC", "limit", "buy", 100, 10000)
-        bitflyer.order("ETH","BTC", "market", "buy", 100, 10000)
+        bitflyer.order("ETH", "BTC", "limit", "buy", 100, 10000)
+        bitflyer.order("ETH", "BTC", "market", "buy", 100, 10000)
 
         bitflyer.httpGet = Mock()
         bitflyer.httpGet.return_value = json.loads(BITFLYER_MOCK_BALANCE)
@@ -74,7 +73,7 @@ class TestExchanges(TestCase):
         order_return.json.return_value = json.loads(BITFLYER_MOCK_ORDER)
         bitflyer.session.post.return_value = order_return
         bitflyer.balance()
-        bitflyer.order("ETH","BTC", "limit", "buy", 100, 10000)
+        bitflyer.order("ETH", "BTC", "limit", "buy", 100, 10000)
         get_open_orders_return = Mock()
         get_open_orders_return.json.return_value = json.loads(BITFLYER_MOCK_OPEN_ORDERS)
         bitflyer.session.get.return_value = get_open_orders_return
@@ -90,22 +89,21 @@ class TestExchanges(TestCase):
 
     def test_poloniex(self):
         poloniex = NewExchange("poloniex", "", "")
-        poloniex.ticker()
+        poloniex.ticker("BTC", "USDT")
         poloniex.markets()
         poloniex.board()
         poloniex.httpPost = Mock()
         poloniex.httpPost.return_value = json.loads(POLONIEX_MOCK_BALANCE)
         poloniex.balance()
         poloniex.httpPost.return_value = json.loads(POLONIEX_MOCK_ORDER)
-        poloniex.order("BTC","ETC", "limit",  "sell", 0.00356515, 2)
-        poloniex.order("BTC","ETC", "fillOrKill",  "sell", 0.00356515, 2)
-
+        poloniex.order("BTC", "ETC", "limit", "sell", 0.00356515, 2)
+        poloniex.order("BTC", "ETC", "fillOrKill", "sell", 0.00356515, 2)
 
     def test_hitbtc(self):
         hitbtc = NewExchange("hitbtc", "", "")
         hitbtc.markets()
         hitbtc.board()
-        hitbtc.ticker()
+        hitbtc.ticker("ETH", "BTC")
 
         hitbtc.session = Mock()
         balance_return = Mock()
@@ -116,14 +114,14 @@ class TestExchanges(TestCase):
         order_return = Mock()
         order_return.json.return_value = json.loads(HITBTC_MOCK_ORDER)
         hitbtc.session.post.return_value = order_return
-        hitbtc.order("ETH","BTC", "limit", "buy", 100, 10000)
-        hitbtc.order("ETH","BTC", "market", "buy", 100, 10000)
+        hitbtc.order("ETH", "BTC", "limit", "buy", 100, 10000)
+        hitbtc.order("ETH", "BTC", "market", "buy", 100, 10000)
 
     def test_binance(self):
         binance = NewExchange("binance", "", "")
         binance.markets()
 
-        binance.ticker()
+        binance.ticker("ETH", "BTC")
 
         binance.session = Mock()
         balance_return = Mock()
@@ -134,12 +132,11 @@ class TestExchanges(TestCase):
         order_return = Mock()
         order_return.json.return_value = json.loads(BINANCE_MOCK_ORDER)
         binance.session.post.return_value = order_return
-        binance.order("BTC","USDT", "limit", "buy", 100, 10000)
-
+        binance.order("BTC", "USDT", "limit", "buy", 100, 10000)
 
     def test_coincheck(self):
         coincheck = NewExchange("coincheck", "", "")
-        coincheck.ticker()
+        coincheck.ticker("BTC", "JPY")
         coincheck.markets()
         coincheck.board()
 
@@ -153,13 +150,13 @@ class TestExchanges(TestCase):
         order_return = Mock()
         order_return.json.return_value = json.loads(COINCHECK_MOCK_ORDER)
         coincheck.session.post.return_value = order_return
-        coincheck.order("btc","jpy", "market", "buy", 100, 10000)
-        coincheck.order("btc","jpy", "market", "sell", 100, 10000)
-        coincheck.order("btc","jpy", "limit", "sell", 100, 10000)
+        coincheck.order("btc", "jpy", "market", "buy", 100, 10000)
+        coincheck.order("btc", "jpy", "market", "sell", 100, 10000)
+        coincheck.order("btc", "jpy", "limit", "sell", 100, 10000)
 
     def test_btcbox(self):
         btcbox = NewExchange("btcbox", "", "")
-        btcbox.ticker()
+        btcbox.ticker("BTC", "JPY")
         btcbox.markets()
         btcbox.board()
 
@@ -173,19 +170,19 @@ class TestExchanges(TestCase):
         order_return = Mock()
         order_return.json.return_value = json.loads(BTCBOX_MOCK_ORDER)
         btcbox.session.post.return_value = order_return
-        btcbox.order("btc","jpy", "market", "buy", 100, 10000)
-        btcbox.order("btc","jpy", "market", "sell", 100, 10000)
-        btcbox.order("btc","jpy", "limit", "sell", 100, 10000)
+        btcbox.order("btc", "jpy", "market", "buy", 100, 10000)
+        btcbox.order("btc", "jpy", "market", "sell", 100, 10000)
+        btcbox.order("btc", "jpy", "limit", "sell", 100, 10000)
 
     def test_kraken(self):
         kraken = NewExchange("kraken", "", "")
-        kraken.ticker()
+        kraken.ticker("XXBTZ", "JPY")
         kraken.markets()
         kraken.board()
 
     def test_quoine(self):
         quoine = NewExchange("quoine", "", "")
-        quoine.ticker()
+        quoine.ticker("BTC", "USD")
         quoine.markets()
         quoine.board()
 
@@ -199,9 +196,9 @@ class TestExchanges(TestCase):
         order_return = Mock()
         order_return.json.return_value = json.loads(QUOINE_MOCK_ORDER)
         quoine.session.post.return_value = order_return
-        quoine.order("btc","jpy", "market", "buy", 100, 10000)
-        quoine.order("btc","jpy", "market", "sell", 100, 10000)
-        quoine.order("btc","jpy", "limit", "sell", 100, 10000)
+        quoine.order("btc", "jpy", "market", "buy", 100, 10000)
+        quoine.order("btc", "jpy", "market", "sell", 100, 10000)
+        quoine.order("btc", "jpy", "limit", "sell", 100, 10000)
 
 
 if __name__ == "__main__":

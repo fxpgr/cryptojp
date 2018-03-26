@@ -41,9 +41,10 @@ class Kraken(Exchange):
         MARKETS_RESOURCE = "/0/public/AssetPairs"
         json = self.session.get('https://' + KRAKEN_REST_URL +
                                 MARKETS_RESOURCE).json()
-        return tuple([CurrencyPair(trading=json["result"][c]["base"],settlement=json["result"][c]["quote"]) for c in json['result']])
+        return tuple([CurrencyPair(trading=json["result"][c]["base"], settlement=json["result"][c]["quote"]) for c in json['result']])
 
-    def ticker(self, pair='XXBTZJPY'):
+    def ticker(self, trading, settlement):
+        pair = trading + settlement
         TICKER_RESOURCE = "/0/public/Ticker?pair=" + pair
         json = self.session.get('https://' + KRAKEN_REST_URL +
                                 TICKER_RESOURCE).json()
@@ -75,7 +76,7 @@ class Kraken(Exchange):
     def order(self, trading, settlement, order_type, side, price, size):
         ORDER_RESOURCE = "/0/private/AddOrder"
         params = {
-            "pair": trading+settlement,
+            "pair": trading + settlement,
             "type": side,
             "order_type": order_type,
             "price": price,
@@ -87,26 +88,25 @@ class Kraken(Exchange):
     def get_open_orders(self, symbol="XXBTZJPY"):
         OPEN_ORDERS_RESOURCE = "/0/private/OpenOrders"
         json = self.httpPost(KRAKEN_REST_URL,
-                            OPEN_ORDERS_RESOURCE, {}, self._apikey, self._secretkey)
+                             OPEN_ORDERS_RESOURCE, {}, self._apikey, self._secretkey)
         return json
 
-    def cancel_order(self, symbol,order_id):
+    def cancel_order(self, symbol, order_id):
         CANCEL_ORDERS_RESOURCE = "/0/private/CancelOrder"
         params = {
             "txid": order_id,
         }
         self.httpPost(KRAKEN_REST_URL,
-                     CANCEL_ORDERS_RESOURCE, params, self._apikey, self._secretkey)
+                      CANCEL_ORDERS_RESOURCE, params, self._apikey, self._secretkey)
 
-    def get_fee(self, symbol = "XXBTZJPY"):
+    def get_fee(self, symbol="XXBTZJPY"):
         GET_FEE_RESOURCE = "/0/public/AssetPairs"
         json = self.httpPost(KRAKEN_REST_URL, GET_FEE_RESOURCE, {}, self._apikey, self._secretkey)
         return json[symbol]['fees']
-
 
     def balance(self):
         BALANCE_RESOURCE = "/api/v1/balance/"
         params = {
         }
-        json = self.httpPost(KRAKEN_REST_URL,  BALANCE_RESOURCE, params)
+        json = self.httpPost(KRAKEN_REST_URL, BALANCE_RESOURCE, params)
         return json["result"]["tb"]

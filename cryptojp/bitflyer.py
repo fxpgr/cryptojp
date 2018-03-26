@@ -23,7 +23,7 @@ class Bitflyer(Exchange):
             headers = {
                 "ACCESS-KEY": apikey,
                 "ACCESS-TIMESTAMP": timestamp,
-                "ACCESS-SIGN":  hmac.new(str.encode(secretkey), text, hashlib.sha256).hexdigest(),
+                "ACCESS-SIGN": hmac.new(str.encode(secretkey), text, hashlib.sha256).hexdigest(),
                 'Content-Type': 'application/json',
             }
             return self.session.get('https://' + url + resource,
@@ -53,14 +53,13 @@ class Bitflyer(Exchange):
         MARKETS_RESOURCE = "/v1/markets"
         json = self.session.get('https://' + BITFLYER_REST_URL +
                                 MARKETS_RESOURCE).json()
-        product_codes = [j["product_code"].split("_") for j in json if len(j["product_code"].split("_"))==2]
+        product_codes = [j["product_code"].split("_") for j in json if len(j["product_code"].split("_")) == 2]
         return tuple([CurrencyPair(trading=p[0], settlement=p[1]) for p in product_codes])
 
-    def ticker(self, item=''):
+    def ticker(self, trading, settlement):
         TICKER_RESOURCE = "/v1/ticker"
         params = {}
-        if item:
-            params["product_code"] = item[0:3] + "_" + item[3:6]
+        params["product_code"] = trading + "_" + settlement
         json = self.session.get('https://' + BITFLYER_REST_URL +
                                 TICKER_RESOURCE, data=params).json()
         return Ticker(
@@ -86,10 +85,10 @@ class Bitflyer(Exchange):
             mid_price=float(json["mid_price"])
         )
 
-    def order(self, trading,settlement, order_type, side, price, size):
+    def order(self, trading, settlement, order_type, side, price, size):
         ORDER_RESOURCE = "/v1/me/sendchildorder"
         params = {
-            "product_code": trading+"_"+settlement,
+            "product_code": trading + "_" + settlement,
             "child_order_type": order_type.upper(),
             "side": side.upper(),
             "price": price,
@@ -106,21 +105,21 @@ class Bitflyer(Exchange):
         OPEN_ORDERS_RESOURCE = "/v1/me/getchildorders"
         params = {"child_order_state": "ACTIVE"}
         if symbol:
-            params["product_code"]= symbol
+            params["product_code"] = symbol
         json = self.httpGet(BITFLYER_REST_URL,
                             OPEN_ORDERS_RESOURCE, params, self._apikey, self._secretkey)
         return json
 
-    def cancel_order(self, symbol,order_id):
+    def cancel_order(self, symbol, order_id):
         CANCEL_ORDERS_RESOURCE = "/v1/me/cancelchildorder"
         params = {
             "product_code": symbol,
             "child_order_acceptance_id": order_id,
         }
         self.httpPost(BITFLYER_REST_URL,
-                     CANCEL_ORDERS_RESOURCE, params, self._apikey, self._secretkey)
+                      CANCEL_ORDERS_RESOURCE, params, self._apikey, self._secretkey)
 
-    def get_fee(self, symbol = "BTC_JPY"):
+    def get_fee(self, symbol="BTC_JPY"):
         GET_FEE_RESOURCE = "/v1/me/gettradingcommission"
         params = {
             "product_code": symbol,

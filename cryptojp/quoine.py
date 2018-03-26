@@ -63,8 +63,8 @@ class Quoine(Exchange):
         self.market_dict = dict(li)
         return tuple([CurrencyPair(trading=j['base_currency'], settlement=j["quoted_currency"]) for j in json])
 
-    def ticker(self, pair='BTCUSD'):
-        TICKER_RESOURCE = "/products/code/CASH/%s" % (pair)
+    def ticker(self, trading, settlement):
+        TICKER_RESOURCE = "/products/code/CASH/%s" % (trading + settlement)
         json = self.session.get('https://' + QUOINE_REST_URL +
                                 TICKER_RESOURCE).json()
 
@@ -109,11 +109,11 @@ class Quoine(Exchange):
                 float(j["balance"]), float(j["balance"])]
         return balances
 
-    def order(self, trading,settlement, order_type, side, price, size):
+    def order(self, trading, settlement, order_type, side, price, size):
         ORDER_RESOURCE = "/orders"
         params = {
             "order_type": order_type.lower(),
-            "product_id": trading+settlement,
+            "product_id": trading + settlement,
             "side": side.lower(),
             "price": price,
             "quantity": size
@@ -129,11 +129,11 @@ class Quoine(Exchange):
                             OPEN_ORDERS_RESOURCE, params, self._apikey, self._secretkey)
         return json
 
-    def cancel_order(self, symbol,order_id):
+    def cancel_order(self, symbol, order_id):
         CANCEL_ORDERS_RESOURCE = "/orders/{0}/cancel".format(order_id)
         self.httpPost(QUOINE_REST_URL, CANCEL_ORDERS_RESOURCE, {}, self._apikey, self._secretkey)
 
-    def get_fee(self, symbol = "BTC_JPY"):
+    def get_fee(self, symbol="BTC_JPY"):
         GET_FEE_RESOURCE = "/products"
 
         json = self.httpGet(QUOINE_REST_URL, GET_FEE_RESOURCE, {}, self._apikey, self._secretkey)

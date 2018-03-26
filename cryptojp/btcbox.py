@@ -25,7 +25,7 @@ class Btcbox(Exchange):
             params['signature'] = sign
             params['key'] = apikey
             params['nonce'] = timestamp
-            return self.session.get('https://' + url + resource,  data=params).json()
+            return self.session.get('https://' + url + resource, data=params).json()
 
         def httpPost(url, resource, params, apikey, secretkey):
             timestamp = str(time.time())
@@ -56,10 +56,10 @@ class Btcbox(Exchange):
         ret.append(CurrencyPair(trading="BCH", settlement="JPY"))
         return ret
 
-    def ticker(self, item=''):
+    def ticker(self, trading, settlement):
         TICKER_RESOURCE = "/api/v1/ticker"
         params = {
-            "coin": item.replace("_jpy", "") if item else "btc"
+            "coin": trading.lower()
         }
         json = self.session.get('https://' + BTCBOX_REST_URL +
                                 TICKER_RESOURCE).json()
@@ -87,13 +87,13 @@ class Btcbox(Exchange):
                        float(json["bids"][0][0])) / 2
         )
 
-    def order(self, trading,settlement, order_type, side, price, size):
+    def order(self, trading, settlement, order_type, side, price, size):
         ORDER_RESOURCE = "/api/v1/trade_add"
         params = {
             "amount": size,
             "side": side.lower(),
             "price": price,
-            "coin": trading.lower()+"_"+settlement.upper(),
+            "coin": trading.lower() + "_" + settlement.upper(),
         }
         json = self.httpPost(BTCBOX_REST_URL, ORDER_RESOURCE,
                              params, self._apikey, self._secretkey)
@@ -109,7 +109,7 @@ class Btcbox(Exchange):
                             OPEN_ORDERS_RESOURCE, params, self._apikey, self._secretkey)
         return json
 
-    def cancel_order(self, symbol,order_id):
+    def cancel_order(self, symbol, order_id):
         CANCEL_ORDERS_RESOURCE = "/api/v1/trade_cancel"
         params = {
             "coin": symbol,

@@ -23,27 +23,27 @@ class Bitfinex(Exchange):
             params["nonce"] = nonce
             params["request"] = resource
             data = base64.b64encode(json.dumps(params).encode())
-            sign = hmac.new(self._secretkey,data,hashlib.sha384).hexdigest()
+            sign = hmac.new(self._secretkey, data, hashlib.sha384).hexdigest()
 
             headers = {
                 "X-BFX-APIKEY": self._apikey,
                 "X-BFX-SIGNATURE": sign,
-                "AX-BFX-PAYLOAD":  data,
+                "AX-BFX-PAYLOAD": data,
             }
             return self.session.get('https://' + url + resource,
-                                     headers=headers, data=json.dumps(params)).json()
+                                    headers=headers, data=json.dumps(params)).json()
 
         def httpPost(url, resource, params, apikey, secretkey):
             nonce = str(int(round(time.time() * 10000)))
             params["nonce"] = nonce
             params["request"] = resource
             data = base64.b64encode(json.dumps(params).encode())
-            sign = hmac.new(self._secretkey,data,hashlib.sha384).hexdigest()
+            sign = hmac.new(self._secretkey, data, hashlib.sha384).hexdigest()
 
             headers = {
                 "X-BFX-APIKEY": self._apikey,
                 "X-BFX-SIGNATURE": sign,
-                "AX-BFX-PAYLOAD":  data,
+                "AX-BFX-PAYLOAD": data,
             }
             return self.session.post('https://' + url + resource,
                                      headers=headers, data=json.dumps(params)).json()
@@ -64,8 +64,8 @@ class Bitfinex(Exchange):
     def settlements(self):
         return ("btc", "usd", "eth")
 
-    def ticker(self, symbol=''):
-        TICKER_RESOURCE = "/v1/pubticker/"+symbol
+    def ticker(self, trading, settlement):
+        TICKER_RESOURCE = "/v1/pubticker/" + trading.lower() + '_' + settlement.lower()
 
         json = self.session.get('https://' + BITFINEX_REST_URL +
                                 TICKER_RESOURCE).json()
@@ -80,7 +80,7 @@ class Bitfinex(Exchange):
         )
 
     def board(self, symbol=''):
-        BOARD_RESOURCE = "/v1/book/"+symbol
+        BOARD_RESOURCE = "/v1/book/" + symbol
         params = {}
         params["group"] = 1
         json = self.session.get('https://' + BITFINEX_REST_URL +
@@ -91,7 +91,7 @@ class Bitfinex(Exchange):
                   for ask in json["asks"]],
             bids=[Bid(price=float(bid["price"]), size=float(bid["amount"]))
                   for bid in json["bids"]],
-            mid_price=(float(json["bids"][0]["price"])+float(json["asks"][0]["price"]))/2
+            mid_price=(float(json["bids"][0]["price"]) + float(json["asks"][0]["price"])) / 2
         )
 
     def order(self, item, order_type, side, price, size):
@@ -100,10 +100,10 @@ class Bitfinex(Exchange):
     def get_open_orders(self, symbol="btcusd"):
         raise Exception("not implemented")
 
-    def cancel_order(self, symbol,order_id):
+    def cancel_order(self, symbol, order_id):
         raise Exception("not implemented")
 
-    def get_fee(self, symbol = "btcusd"):
+    def get_fee(self, symbol="btcusd"):
         raise Exception("not implemented")
 
     def balance(self):

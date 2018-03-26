@@ -38,7 +38,7 @@ class Poloniex(Exchange):
         json = self.session.get('https://' + POLONIEX_REST_URL +
                                 MARKETS_RESOURCE).json()
         tmp = tuple([j.split("_") for j in json.keys()])
-        return [CurrencyPair(trading=t[1],settlement=t[0]) for t in tmp]
+        return [CurrencyPair(trading=t[1], settlement=t[0]) for t in tmp]
 
     def settlements(self):
         SETTLEMENTS_RESOURCE = "/public?command=returnTicker"
@@ -46,8 +46,9 @@ class Poloniex(Exchange):
                               SETTLEMENTS_RESOURCE).json()
         return tuple(set([c.split("_")[0] for c in js.keys()]))
 
-    def ticker(self, item='USDT_BTC'):
+    def ticker(self, trading, settlement):
         TICKER_RESOURCE = "/public?command=returnTicker"
+        item = settlement.upper() + "_" + trading.upper()
 
         json = self.session.get('https://' + POLONIEX_REST_URL +
                                 TICKER_RESOURCE).json()
@@ -72,7 +73,7 @@ class Poloniex(Exchange):
                   for ask in json["asks"]],
             bids=[Bid(price=float(bid[0]), size=float(bid[1]))
                   for bid in json["bids"]],
-            mid_price=(float(json["asks"][0][0])+float(json["bids"][0][0]))/2
+            mid_price=(float(json["asks"][0][0]) + float(json["bids"][0][0])) / 2
         )
 
     def order(self, trading, settlement, order_type, side, price, size):
@@ -98,19 +99,19 @@ class Poloniex(Exchange):
         if symbol:
             params["currencyPair"] = symbol
         json = self.httpPost(POLONIEX_REST_URL,
-                            OPEN_ORDERS_RESOURCE, params, self._apikey, self._secretkey)
+                             OPEN_ORDERS_RESOURCE, params, self._apikey, self._secretkey)
         return json
 
-    def cancel_order(self, symbol,order_id):
+    def cancel_order(self, symbol, order_id):
         CANCEL_ORDERS_RESOURCE = "/tradingApi"
         params = {
             "command": "cancelOrder",
             "orderNumber": order_id
         }
         self.httpPost(POLONIEX_REST_URL,
-                     CANCEL_ORDERS_RESOURCE, params, self._apikey, self._secretkey)
+                      CANCEL_ORDERS_RESOURCE, params, self._apikey, self._secretkey)
 
-    def get_fee(self, symbol = "BTC_JPY"):
+    def get_fee(self, symbol="BTC_JPY"):
         GET_FEE_RESOURCE = "/tradingApi"
         params = {
             "command": "returnFeeInfo",

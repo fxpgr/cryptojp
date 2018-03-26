@@ -19,7 +19,7 @@ BINANCE_NEW_REST_URL = 'www.binance.com/api'
 
 class Binance(Exchange):
     def __init__(self, apikey, secretkey):
-        def httpPost(url,resource, params):
+        def httpPost(url, resource, params):
             params["timestamp"] = int(round(time.time() * 1000))
             query = urlencode(params)
             params["signature"] = hmac.new(self._secretkey.encode("utf8"), query.encode("utf8"), digestmod=hashlib.sha256).hexdigest()
@@ -30,7 +30,7 @@ class Binance(Exchange):
             }
             return self.session.post(url, headers=headers).json()
 
-        def httpGet(url,resource, params):
+        def httpGet(url, resource, params):
             params["timestamp"] = int(round(time.time() * 1000))
             query = urlencode(params)
             params["signature"] = hmac.new(self._secretkey.encode("utf8"), query.encode("utf8"), digestmod=hashlib.sha256).hexdigest()
@@ -61,10 +61,10 @@ class Binance(Exchange):
                                 SETTLEMENTS_RESOURCE).json()
         return tuple(set([j["quoteAsset"] for j in json["symbols"]]))
 
-    def ticker(self, item='BTCUSDT'):
+    def ticker(self, trading, settlement):
         TICKER_RESOURCE = "/api/v1/klines"
         params = {
-            'symbol': item,
+            'symbol': trading.upper() + settlement.upper(),
             'interval': '1d',
         }
         json = self.session.get('https://' + BINANCE_REST_URL +
@@ -79,7 +79,7 @@ class Binance(Exchange):
             volume=float(json[-1][5])
         )
 
-    def board(self,item='BTCUSDT'):
+    def board(self, item='BTCUSDT'):
         BOARD_RESOURCE = "/v1/depth"
         params = {
             "symbol": item,
@@ -92,27 +92,27 @@ class Binance(Exchange):
                   for ask in json["asks"]],
             bids=[Bid(price=float(bid[0]), size=float(bid[1]))
                   for bid in json["bids"]],
-            mid_price=(float(json["asks"][0][0])+float(json["bids"][0][0]))/2
+            mid_price=(float(json["asks"][0][0]) + float(json["bids"][0][0])) / 2
         )
 
-    def order(self,trading, settlement, order_type, side, price, size):
+    def order(self, trading, settlement, order_type, side, price, size):
         ORDER_RESOURCE = "/v3/order"
         params = {
-            "symbol": trading+settlement,
+            "symbol": trading + settlement,
             "side": side,
             "type": order_type.upper(),
             "timeInForce": "GTC",
             "quantity": size,
             "price": price
         }
-        json = self.httpPost(BINANCE_NEW_REST_URL,ORDER_RESOURCE, params=params)
+        json = self.httpPost(BINANCE_NEW_REST_URL, ORDER_RESOURCE, params=params)
         return json[0]["orderId"]
 
     def balance(self):
         BALANCE_RESOURCE = "/v3/account"
 
-        json = self.httpGet(BINANCE_NEW_REST_URL,BALANCE_RESOURCE, {})
+        json = self.httpGet(BINANCE_NEW_REST_URL, BALANCE_RESOURCE, {})
         balances = {}
         for j in json["balances"]:
-            balances[j["asset"]]=[float(j["free"])+float(j["locked"]),float(j["free"])]
+            balances[j["asset"]] = [float(j["free"]) + float(j["locked"]), float(j["free"])]
         return balances
