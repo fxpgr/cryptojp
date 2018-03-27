@@ -50,7 +50,7 @@ poloniex = NewExchange("poloniex", APIKEY, SECRET_KEY)
 |-------------------|----------|-----------|--------|--------|--------|--------|---------|
 | ticker()          | ✓        | ✓         | ✓      | ✓      | ✓      | ✓      | ✓       |
 | markets()         | ✓        | ✓         | ✓      | ✓      | ✓      | ✓      | ✓       |
-| settlements()     | ☓        | ☓         | ☓      | ☓      | ☓      | ✓      | ✓       |
+| settlements()     | ✓        | ✓         | ✓      | ✓      | ✓      | ✓      | ✓       |
 | board()           | ✓        | ✓         | ✓      | ✓      | ✓      | ✓      | ✓       |
 | order()           | ✓        | ✓         | ✓      | ✓      | ✓      | ✓      | ✓       |
 | balance()         | ✓        | ✓         | ✓      | ✓      | ✓      | ✓      | ✓       |
@@ -63,7 +63,7 @@ poloniex = NewExchange("poloniex", APIKEY, SECRET_KEY)
 |-------------------|----------|-----------|
 | ticker()          | ✓        | ✓         |
 | markets()         | ✓        | ✓         |
-| settlements()     | ✓        | ☓         |
+| settlements()     | ✓        | ✓         |
 | board()           | ✓        | ✓         |
 | order()           | ✓        | ☓         |
 | balance()         | ✓        | ☓         |

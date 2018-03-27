@@ -63,6 +63,13 @@ class Quoine(Exchange):
         self.market_dict = dict(li)
         return tuple([CurrencyPair(trading=j['base_currency'], settlement=j["quoted_currency"]) for j in json])
 
+    def settlements(self):
+        MARKETS_RESOURCE = "/products"
+        json = self.session.get('https://' + QUOINE_REST_URL +
+                                MARKETS_RESOURCE).json()
+        li = [j['quoted_currency'] for j in json]
+        return tuple(set(li))
+
     def ticker(self, trading, settlement):
         TICKER_RESOURCE = "/products/code/CASH/%s" % (trading + settlement)
         json = self.session.get('https://' + QUOINE_REST_URL +

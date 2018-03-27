@@ -41,6 +41,13 @@ class Poloniex(Exchange):
         return [CurrencyPair(trading=t[1], settlement=t[0]) for t in tmp]
 
     def settlements(self):
+        MARKETS_RESOURCE = "/public?command=returnTicker"
+        json = self.session.get('https://' + POLONIEX_REST_URL +
+                                MARKETS_RESOURCE).json()
+        tmp = tuple([j.split("_") for j in json.keys()])
+        return tuple(set([t[0] for t in tmp]))
+
+    def settlements(self):
         SETTLEMENTS_RESOURCE = "/public?command=returnTicker"
         js = self.session.get('https://' + POLONIEX_REST_URL +
                               SETTLEMENTS_RESOURCE).json()

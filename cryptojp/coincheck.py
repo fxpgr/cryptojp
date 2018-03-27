@@ -66,6 +66,9 @@ class Coincheck(Exchange):
     def markets(self):
         return (CurrencyPair(trading="BTC", settlement="JPY"),)
 
+    def settlements(self):
+        return tuple("JPY")
+
     def ticker(self, trading, settlement):
         TICKER_RESOURCE = "/api/ticker"
         json = self.session.get('https://' + COINCHECK_REST_URL +

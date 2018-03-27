@@ -54,7 +54,14 @@ class Bitflyer(Exchange):
         json = self.session.get('https://' + BITFLYER_REST_URL +
                                 MARKETS_RESOURCE).json()
         product_codes = [j["product_code"].split("_") for j in json if len(j["product_code"].split("_")) == 2]
-        return tuple([CurrencyPair(trading=p[0], settlement=p[1]) for p in product_codes])
+        return tuple([CurrencyPair(trading=p[0].upper(), settlement=p[1].upper()) for p in product_codes])
+
+    def settlements(self):
+        MARKETS_RESOURCE = "/v1/markets"
+        json = self.session.get('https://' + BITFLYER_REST_URL +
+                                MARKETS_RESOURCE).json()
+        settlements = [j["product_code"].split("_")[1] for j in json if len(j["product_code"].split("_")) == 2]
+        return tuple(set(settlements))
 
     def ticker(self, trading, settlement):
         TICKER_RESOURCE = "/v1/ticker"

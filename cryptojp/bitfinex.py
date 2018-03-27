@@ -62,7 +62,7 @@ class Bitfinex(Exchange):
         return tuple([j.upper() for j in json])
 
     def settlements(self):
-        return ("btc", "usd", "eth")
+        return ("BTC", "USD", "ETH")
 
     def ticker(self, trading, settlement):
         TICKER_RESOURCE = "/v1/pubticker/" + trading.lower() + '_' + settlement.lower()

@@ -56,6 +56,9 @@ class Btcbox(Exchange):
         ret.append(CurrencyPair(trading="BCH", settlement="JPY"))
         return ret
 
+    def settlements(self):
+        return tuple("JPY")
+
     def ticker(self, trading, settlement):
         TICKER_RESOURCE = "/api/v1/ticker"
         params = {

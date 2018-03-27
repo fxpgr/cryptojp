@@ -41,7 +41,15 @@ class Kraken(Exchange):
         MARKETS_RESOURCE = "/0/public/AssetPairs"
         json = self.session.get('https://' + KRAKEN_REST_URL +
                                 MARKETS_RESOURCE).json()
-        return tuple([CurrencyPair(trading=json["result"][c]["base"], settlement=json["result"][c]["quote"]) for c in json['result']])
+        return tuple([CurrencyPair(trading=json["result"][c]["base"], settlement=json["result"][c]["quote"]) for c in
+                      json['result']])
+
+    def settlements(self):
+        MARKETS_RESOURCE = "/0/public/AssetPairs"
+        json = self.session.get('https://' + KRAKEN_REST_URL +
+                                MARKETS_RESOURCE).json()
+        return tuple(set([json["result"][c]["quote"] for c in
+                      json['result']]))
 
     def ticker(self, trading, settlement):
         pair = trading + settlement
