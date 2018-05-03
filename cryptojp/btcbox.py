@@ -94,7 +94,7 @@ class Btcbox(Exchange):
             "amount": size,
             "side": side.lower(),
             "price": price,
-            "coin": trading.lower() + "_" + settlement.upper(),
+            "coin": trading.lower() + "_" + settlement.lower(),
         }
         json = self.httpPost(BTCBOX_REST_URL, ORDER_RESOURCE,
                              params, self._apikey, self._secretkey)
