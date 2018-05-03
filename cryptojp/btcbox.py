@@ -18,10 +18,9 @@ class Btcbox(Exchange):
             timestamp = str(time.time())
             coin = params['coin']
             text = "key={}&coin={}&nonce={}".format(apikey, coin, timestamp)
-            hashId = hashlib.md5()
-            hashId.update(repr(secretkey).encode('utf-8'))
-            sign = hmac.new((bytes(hashId.digest())).lower(
-            ), str.encode(text), hashlib.sha256).hexdigest()
+            h = hashlib.new('md5', (self._secretkey).encode('utf-8'))
+            sign = hmac.new((bytes(h.digest())).lower(
+            ), str.encode(text), hashlib.sha256).digest()
             params['signature'] = sign
             params['key'] = apikey
             params['nonce'] = timestamp
@@ -31,10 +30,9 @@ class Btcbox(Exchange):
             timestamp = str(time.time())
             coin = params['coin']
             text = "key={}&coin={}&nonce={}".format(apikey, coin, timestamp)
-            hashId = hashlib.md5()
-            hashId.update(repr(secretkey).encode('utf-8'))
-            sign = hmac.new((bytes(hashId.digest())).lower(
-            ), str.encode(text), hashlib.sha256).hexdigest()
+            h = hashlib.new('md5', (self._secretkey).encode('utf-8'))
+            sign = hmac.new((bytes(h.digest())).lower(
+            ), str.encode(text), hashlib.sha256).digest()
             params['signature'] = sign
             params['key'] = apikey
             params['nonce'] = timestamp
@@ -91,7 +89,7 @@ class Btcbox(Exchange):
         )
 
     def order(self, trading, settlement, order_type, side, price, size):
-        ORDER_RESOURCE = "/api/v1/trade_add"
+        ORDER_RESOURCE = "/api/v1/trade_add/"
         params = {
             "amount": size,
             "side": side.lower(),
