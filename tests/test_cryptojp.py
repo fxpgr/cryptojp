@@ -36,7 +36,7 @@ BTCBOX_MOCK_BALANCE = """{"uid":8,"nameauth":0,"moflag":0,"btc_balance":4234234,
 
 QUOINE_MOCK_BALANCE = """[{"currency":"BTC","balance":"0.04925688"},{"currency":"USD","balance":"7.17696"},{"currency":"JPY","balance":"356.01377"}]"""
 QUOINE_MOCK_ORDER = """{"id":2157474,"order_type":"limit","quantity":"0.01","disc_quantity":"0.0","iceberg_total_quantity":"0.0","side":"sell","filled_quantity":"0.0","price":"500.0","created_at":1462123639,"updated_at":1462123639,"status":"live","leverage_level":1,"source_exchange":"QUOINE","product_id":1,"product_code":"CASH","funding_currency":"USD","currency_pair_code":"BTCUSD","order_fee":"0.0"}"""
-
+QUOINE_MOCK_PRODUCTS = """[{"id":5,"currency_pair_code":"BTCJPY"}]"""
 
 class TestExchanges(TestCase):
 
@@ -105,12 +105,13 @@ class TestExchanges(TestCase):
         hitbtc.board()
         hitbtc.ticker("ETH", "BTC")
 
-        hitbtc.session = Mock()
+        hitbtc.session.get = Mock()
         balance_return = Mock()
         balance_return.json.return_value = json.loads(HITBTC_MOCK_BALANCE)
         hitbtc.session.get.return_value = balance_return
         hitbtc.balance()
 
+        hitbtc.session.post = Mock()
         order_return = Mock()
         order_return.json.return_value = json.loads(HITBTC_MOCK_ORDER)
         hitbtc.session.post.return_value = order_return
@@ -123,12 +124,13 @@ class TestExchanges(TestCase):
 
         binance.ticker("ETH", "BTC")
 
-        binance.session = Mock()
+        binance.session.get = Mock()
         balance_return = Mock()
         balance_return.json.return_value = json.loads(BINANCE_MOCK_BALANCE)
         binance.session.get.return_value = balance_return
         binance.balance()
 
+        binance.session.post = Mock()
         order_return = Mock()
         order_return.json.return_value = json.loads(BINANCE_MOCK_ORDER)
         binance.session.post.return_value = order_return
@@ -192,6 +194,9 @@ class TestExchanges(TestCase):
         quoine.session.get.return_value = balance_return
         quoine.balance()
 
+        products_return = Mock()
+        products_return.json.return_value = json.loads(QUOINE_MOCK_PRODUCTS)
+        quoine.session.get.return_value = products_return
         quoine.session.post = Mock()
         order_return = Mock()
         order_return.json.return_value = json.loads(QUOINE_MOCK_ORDER)
