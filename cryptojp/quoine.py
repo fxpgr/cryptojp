@@ -117,10 +117,17 @@ class Quoine(Exchange):
         return balances
 
     def order(self, trading, settlement, order_type, side, price, size):
+        PRODUCTS_RESOURCE = "/products"
+        product_json = self.httpGet(QUOINE_REST_URL,
+                            PRODUCTS_RESOURCE, {}, self._apikey, self._secretkey)
+        products = {}
+        for j in product_json:
+            products[j['currency_pair_code']] = j['id']
+
         ORDER_RESOURCE = "/orders"
         params = {
             "order_type": order_type.lower(),
-            "product_id": trading + settlement,
+            "product_id": products[trading.upper() + settlement.upper()],
             "side": side.lower(),
             "price": price,
             "quantity": size
@@ -138,7 +145,7 @@ class Quoine(Exchange):
 
     def cancel_order(self, symbol, order_id):
         CANCEL_ORDERS_RESOURCE = "/orders/{0}/cancel".format(order_id)
-        self.httpPost(QUOINE_REST_URL, CANCEL_ORDERS_RESOURCE, {}, self._apikey, self._secretkey)
+        self.httpPut(QUOINE_REST_URL, CANCEL_ORDERS_RESOURCE, {}, self._apikey, self._secretkey)
 
     def get_fee(self, symbol="BTC_JPY"):
         GET_FEE_RESOURCE = "/products"
