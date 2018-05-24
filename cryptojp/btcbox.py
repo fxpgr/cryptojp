@@ -19,8 +19,7 @@ class Btcbox(Exchange):
             coin = params['coin']
             text = "key={}&coin={}&nonce={}".format(apikey, coin, timestamp)
             h = hashlib.new('md5', (self._secretkey).encode('utf-8'))
-            sign = hmac.new((bytes(h.digest())).lower(
-            ), str.encode(text), hashlib.sha256).digest()
+            sign = hmac.new(bytes(h.hexdigest(), 'UTF-8'), bytes(text, 'UTF-8'), hashlib.sha256).hexdigest()
             params['signature'] = sign
             params['key'] = apikey
             params['nonce'] = timestamp
@@ -31,8 +30,7 @@ class Btcbox(Exchange):
             coin = params['coin']
             text = "key={}&coin={}&nonce={}".format(apikey, coin, timestamp)
             h = hashlib.new('md5', (self._secretkey).encode('utf-8'))
-            sign = hmac.new((bytes(h.digest())).lower(
-            ), str.encode(text), hashlib.sha256).digest()
+            sign = hmac.new((bytes(h.hexdigest(), 'UTF-8')), bytes(text, 'UTF-8'), hashlib.sha256).hexdigest()
             params['signature'] = sign
             params['key'] = apikey
             params['nonce'] = timestamp
